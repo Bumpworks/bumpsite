@@ -1,3 +1,10 @@
+{% extends "bump/base.html" %}
+
+{% block title %}
+Rankings
+{% endblock title %}
+
+{% block content %}
 {% if elo_dict %}
 <ol>
 {% for player_name, player_rating, player_record in elo_dict %}
@@ -5,3 +12,5 @@
 {% endfor %}
 </ol>
 {% endif %}
+{% endblock content %}
+

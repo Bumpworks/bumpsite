@@ -1,5 +1,13 @@
+{% extends "bump/base.html" %}
+
+{% block title %}
+Game submission form
+{% endblock title %}
+
+{% block content %}
 <form action="/bump/submit-game/" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Submit</button>
 </form>
+{% endblock content %}

@@ -1,3 +1,10 @@
+{% extends "bump/base.html" %}
+
+{% block title %}
+News Feed
+{% endblock title %}
+
+{% block content %}
 {% if games_feed %}
 <ul>
 {% for game in games_feed %}
@@ -5,3 +12,4 @@
 {% endfor %}
 </ul>
 {% endif %}
+{% endblock content %}
