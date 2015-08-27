@@ -3,3 +3,15 @@
     {{ form.as_p }}
     <button type="submit">Submit</button>
 </form>
+{% if feed %}
+    <ul>
+    {% for game in feed %}
+        <li>{{ game.date }} {{ game.winner }} {{ game.loser }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+<select>
+{% for player in players %}
+<option>{{ player.name }}</option>
+{% endfor %}
+</select>

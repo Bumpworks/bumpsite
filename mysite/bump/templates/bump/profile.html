@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Le Bump</title>
+    </head>
+
+    <body>
+        {% if player.user %}
+        Registered! Username: {{ player.user }}
+        {% else %}
+        Not registered.
+        {% endif %}
+
+    </body>
+</html>
