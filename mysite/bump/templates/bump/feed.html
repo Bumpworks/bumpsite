@@ -1,0 +1,15 @@
+{% if user.is_authenticated %}
+<h3>Hello, {{ user.username }}!</h3>
+<h4><a href='/bump/profiles/{{ user.username }}'>My Profile</a></h4>
+<h4><a href='/bump/logout/'>Log out</a></h4>
+{% else %}
+<h3><a href='/bump/login'>Log in</a> or <a href='/bump/register/'>Register</a></h3>
+{% endif %}
+
+{% if games_feed %}
+<ul>
+{% for game in games_feed %}
+    <li>{{ game.date }} {{ game.winner }} {{ game.loser }}</li>
+{% endfor %}
+</ul>
+{% endif %}
