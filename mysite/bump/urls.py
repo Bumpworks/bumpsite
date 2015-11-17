@@ -4,6 +4,11 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^game/([0-9]+)/$', views.game_detail, name = 'game_detail'),
-	url(r'^player/(\w+)/$', views.player_detail, name = 'player_detail'),
+    url(r'^submit-game/$', views.submit_game, name='game_submit'),
+    url(r'^rankings/$', views.rankings, name = 'rankings'),
+    url(r'^register/$', views.register, name = 'register'),
+    url(r'^login/$', views.user_login, name='login'),
+    url(r'^logout/$', views.user_logout, name='logout'),
+    url(r'^profiles/(?P<player_name>[\w]+)/$', views.player_profile, name='logout'),
+    
 ]
