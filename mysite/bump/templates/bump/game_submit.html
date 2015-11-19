@@ -1,3 +1,9 @@
+<script type="text/javascript">
+     function setFocusToBox(){
+        document.getElementById("id_game_text").focus();
+     }
+</script>
+<body onload='setFocusToBox()'>
 <form action="/bump/submit-game/" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
@@ -14,4 +20,5 @@
 {% for player in players %}
 <option>{{ player.name }}</option>
 {% endfor %}
-</select>
+</select
+</body>
