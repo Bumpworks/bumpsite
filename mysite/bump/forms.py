@@ -42,6 +42,8 @@ class GameSubmissionForm(forms.Form):
                 num_games = int(gt[1])
                 if num_games < 1:
                     raise ValidationError("Please enter a positive number of games. Not "+num_games)
+                if num_games > 5:
+                    raise ValidationError("You can only enter 5 games, dingus. Not "+num_games)
                 loser = gt[2]
                 cut_index = 3
             except ValueError:
