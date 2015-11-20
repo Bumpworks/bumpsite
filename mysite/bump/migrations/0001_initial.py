@@ -2,11 +2,14 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import django.utils.timezone
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -14,21 +17,22 @@ class Migration(migrations.Migration):
             name='Game',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('date', models.DateTimeField(verbose_name=b'Date Joined LeBump')),
-                ('comments', models.CharField(max_length=500)),
-                ('bumpForGlory', models.BooleanField(default=False)),
-                ('sweep', models.BooleanField(default=False)),
+                ('date', models.DateTimeField(default=django.utils.timezone.now)),
+                ('advantage', models.CharField(default=b'', max_length=2, choices=[(b'', b'Not Specified'), (b'bw', b'Break White'), (b'br', b'Break Red'), (b'hw', b'Hold White'), (b'hr', b'Hold Red')])),
+                ('table', models.CharField(default=b'ty', max_length=2, choices=[(b'ty', b'Brunswick'), (b'wi', b'Gray Table'), (b'ka', b'Kaighn Table'), (b'me', b'Mehul/Adil/Bryan Table'), (b'lo', b'Loop Table')])),
+                ('finisher', models.CharField(default=b'', max_length=3, choices=[(b'', b'Normal'), (b'bfg', b'Bump for Glory'), (b'jfg', b'Jump for Glory'), (b'nfg', b'New Age for Glory'), (b'swe', b'Sweep')])),
             ],
         ),
         migrations.CreateModel(
             name='Player',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('Player_text', models.CharField(max_length=60)),
-                ('date_joined', models.DateTimeField(verbose_name=b'Date Joined LeBump')),
-                ('email', models.CharField(default=b'', max_length=60)),
-                ('phone', models.CharField(default=b'', max_length=60)),
-                ('competitors', models.ManyToManyField(related_name='competitors_rel_+', to='bump.Player')),
+                ('identifier', models.CharField(max_length=30)),
+                ('class_year', models.IntegerField(default=2016)),
+                ('first_name', models.CharField(default=b'', max_length=30)),
+                ('last_name', models.CharField(default=b'', max_length=30)),
+                ('duke', models.BooleanField(default=True)),
+                ('user', models.OneToOneField(null=True, to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
