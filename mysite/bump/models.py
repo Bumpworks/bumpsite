@@ -4,8 +4,12 @@ from django.contrib.auth.models import User
 
 
 class Player(models.Model):
-    name = models.CharField(default="",max_length = 30)
+    identifier = models.CharField(max_length = 30)  
     user = models.OneToOneField(User, null=True)
+    class_year = models.IntegerField(default=2016)
+    first_name = models.CharField(default="",max_length = 30)
+    last_name = models.CharField(default="",max_length = 30)
+    duke = models.BooleanField(default=True)
     
     def __unicode__(self):
         return self.name
