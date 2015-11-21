@@ -25,14 +25,14 @@ def submit_game(request):
                 if len(detail)==0:
                     continue
                 game = detail.split()
-                winner = get_object_or_404(Player,name=game[0])
+                winner = get_object_or_404(Player,identifier__iexact=game[0])
                 current_index = 1
                 try:
                     num_games = int(game[current_index])
                     current_index += 1
                 except ValueError:
                     num_games = 1
-                loser = get_object_or_404(Player,name=game[current_index])
+                loser = get_object_or_404(Player,identifier__iexact=game[current_index])
                 tags = game[current_index+1:]
                 advantage = ''
                 finisher = ''
@@ -95,7 +95,7 @@ def register(request):
             player = cd.get('player')
             user = user_form.save()
             user.set_password(user.password)
-            user.username = player.name
+            user.username = player.identifier
             user.save()
             player.user = user
             player.save()
@@ -134,6 +134,5 @@ def user_logout(request):
     return HttpResponseRedirect('/bump/')
     
 def player_profile(request, player_name):
-    print player_name
-    player = get_object_or_404(Player, name=player_name)
+    player = get_object_or_404(Player, identifier=player_name)
     return render(request, 'bump/profile.html', {'player' : player})
