@@ -1,7 +1,7 @@
 {% if elo_dict %}
 <ol>
 {% for player_name, player_rating, player_record in elo_dict %}
-    <li>{{ player_name }} {{ player_rating|floatformat:0 }} {{ player_record }}</li>
+    <li>{{ player_identifier }} {{ player_rating|floatformat:0 }} {{ player_record }}</li>
 {% endfor %}
 </ol>
 {% endif %}

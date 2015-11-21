@@ -36,7 +36,7 @@ class GameSubmissionForm(forms.Form):
             if len(gt) < 2:
                 raise ValidationError("You need to specify a winner and loser.")
             winner = gt[0]
-            if not Player.objects.filter(name=winner).exists():
+            if not Player.objects.filter(identifier=winner).exists():
                 raise ValidationError(winner + " is not a registered player.")
             try:
                 num_games = int(gt[1])
@@ -49,7 +49,7 @@ class GameSubmissionForm(forms.Form):
             except ValueError:
                 loser = gt[1]
                 cut_index = 2
-            if not Player.objects.filter(name=loser).exists():
+            if not Player.objects.filter(identifier=loser).exists():
                 raise ValidationError(loser+" is not a registered player.")
             if winner == loser:
                 raise ValidationError(winner + " cannot beat themself, silly.")
