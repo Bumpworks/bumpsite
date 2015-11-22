@@ -10,6 +10,7 @@ class Player(models.Model):
     first_name = models.CharField(max_length = 30)
     last_name = models.CharField(max_length = 30)
     duke = models.BooleanField(default=True)
+    netid = models.CharField(max_length = 7, null = True, blank = True)
     
     def __unicode__(self):
         return self.identifier

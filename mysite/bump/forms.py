@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
-        fields = ('identifier', 'first_name','last_name','duke','class_year')
+        fields = ('identifier', 'first_name','last_name','duke','class_year','netid')
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
