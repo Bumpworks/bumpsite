@@ -139,3 +139,6 @@ def user_logout(request):
 def player_profile(request, player_name):
     player = get_object_or_404(Player, identifier=player_name)
     return render(request, 'bump/profile.html', {'player' : player})
+    
+def player_info(request):
+    return render(request, 'bump/players.html', {'players' : Player.objects.order_by('first_name')})
