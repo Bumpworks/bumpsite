@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^profiles/(?P<player_name>[\w]+)/$', views.player_profile, name='logout'),
     url(r'^players/$', views.player_info, name='player_info'),
+    url(r'^create-player/$', views.create_player, name='create_player'),
 
     
 ]

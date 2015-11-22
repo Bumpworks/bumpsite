@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Player, Game
 import math
-from .forms import GameSubmissionForm, UserForm
+from .forms import GameSubmissionForm, UserForm, PlayerForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -112,6 +112,21 @@ def register(request):
     return render(request,
             'bump/register.html',
             {'user_form': user_form, 'registered': registered} )
+def create_player(request):
+    created = False
+    if request.method == 'POST':
+        player_form = PlayerForm(data=request.POST)
+        if player_form.is_valid():
+            cd = player_form.cleaned_data
+            player = player_form.save()
+            created = True
+        else:
+            print user_form.errors
+    else:
+        player_form = PlayerForm()
+    return render(request,
+            'bump/create_player.html',
+            {'player_form': player_form, 'created': created} )
 
 def user_login(request):
     if request.method == 'POST':

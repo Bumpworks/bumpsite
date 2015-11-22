@@ -4,6 +4,10 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+class PlayerForm(forms.ModelForm):
+    class Meta:
+        model = Player
+        fields = ('identifier', 'first_name','last_name','duke','class_year')
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -12,11 +16,6 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email', 'password')
-    
-    def clean(self):
-        cd = self.cleaned_data
-        player = cd.get('player')
-        return cd
 
         
         
