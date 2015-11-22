@@ -98,7 +98,6 @@ def register(request):
             player = cd.get('player')
             user = user_form.save()
             user.set_password(user.password)
-            user.username = player.identifier
             user.save()
             player.user = user
             player.save()
