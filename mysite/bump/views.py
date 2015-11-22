@@ -16,6 +16,9 @@ def submit_game(request):
     if request.method=='POST':
         form = GameSubmissionForm(request.POST)
         if form.is_valid():
+            game_recorder = None
+            if request.user.is_authenticated():
+                game_recorder = request.user
             cd = form.cleaned_data
             game_text = cd.get('game_text')
             date = cd.get('date')
@@ -42,7 +45,7 @@ def submit_game(request):
                     if tags[i] in Game.finisher_choices:
                         finisher = tags[i]
                 for i in range(num_games):    
-                    game = Game(winner=winner,loser=loser,advantage=advantage,finisher=finisher,table=table,date=date)
+                    game = Game(winner=winner,loser=loser,advantage=advantage,finisher=finisher,table=table,date=date,recorder=game_recorder)
                     game.save()
             form = GameSubmissionForm()
     else:

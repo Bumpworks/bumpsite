@@ -18,6 +18,7 @@ class Game(models.Model):
     date = models.DateTimeField(default=timezone.now)
     winner = models.ForeignKey(Player, related_name = 'game_winner', default = 1)
     loser = models.ForeignKey(Player, related_name = 'game_loser', default = 2)
+    recorder = models.ForeignKey(User)
     advantage_choices_tuples = (
         ('', 'Not Specified'),
         ('bw', 'Break White'),
@@ -44,6 +45,7 @@ class Game(models.Model):
     finisher = models.CharField(choices=finisher_choices_tuples, max_length=3,default='')
     advantage_choices = [choice[0] for choice in advantage_choices_tuples]
     finisher_choices = [choice[0] for choice in finisher_choices_tuples]
+    
 
     def __unicode__(self):
         return str(self.winner) +' '+ str(self.loser)

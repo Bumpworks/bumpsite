@@ -28,9 +28,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('identifier', models.CharField(max_length=30)),
-                ('class_year', models.IntegerField(default=2016)),
-                ('first_name', models.CharField(default=b'', max_length=30)),
-                ('last_name', models.CharField(default=b'', max_length=30)),
+                ('class_year', models.IntegerField()),
+                ('first_name', models.CharField(max_length=30)),
+                ('last_name', models.CharField(max_length=30)),
                 ('duke', models.BooleanField(default=True)),
                 ('user', models.OneToOneField(null=True, to=settings.AUTH_USER_MODEL)),
             ],
@@ -39,6 +39,11 @@ class Migration(migrations.Migration):
             model_name='game',
             name='loser',
             field=models.ForeignKey(related_name='game_loser', default=2, to='bump.Player'),
+        ),
+        migrations.AddField(
+            model_name='game',
+            name='recorder',
+            field=models.OneToOneField(to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='game',
