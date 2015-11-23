@@ -1,0 +1,58 @@
+<!-- Base html template for entire site. Contains links to bootstrap CSS -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- {% load staticfiles %} -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <title>{% block title %}Bump Site{% endblock %}</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+
+      <a class="navbar-brand" href="#">BumpWorks</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+
+      <!-- index should be renamed to feed -->
+
+      <li><a href="{% url 'bump:index' %}">Game Feed</a></li>
+        <li><a href="{% url 'bump:game_submit' %}">Submit Game</a></li>
+         <li><a href="{% url 'bump:rankings' %}">Rankings</a></li>
+         <li><a href="http://bump.suyashkumar.com">Bump Explore</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+      {% if user.is_authenticated %}
+      <li>Hello, {{ user.username }}!</li>
+      <li><a href="{% url 'bump:profile' user.username %}">My Profile</a></li>
+      <li><a href="{% url 'bump:logout' %}">Log out</a></li>
+      {% else %}
+      <li><a href="{% url 'bump:login' %}">Log in</a></li>
+      <li><a href="{% url 'bump:register' %}">Register</a></li>
+      {% endif %}
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+</html>

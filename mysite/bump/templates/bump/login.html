@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Le Bump</title>
-    </head>
-
-    <body>
+{% extends 'bump/base.html' %}
+{% block content %}
         <h1>Login to Le Bump</h1>
 
         <form id="login_form" method="post" action="/bump/login/">
@@ -16,6 +11,4 @@
 
             <input type="submit" value="submit" />
         </form>
-
-    </body>
-</html>
+{% endblock %}

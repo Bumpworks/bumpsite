@@ -5,6 +5,8 @@ from .forms import GameSubmissionForm, UserForm, PlayerForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+
 
 
 def index(request):
@@ -150,9 +152,11 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/bump/')
     
-def player_profile(request, player_name):
-    player = get_object_or_404(Player, identifier=player_name)
-    return render(request, 'bump/profile.html', {'player' : player})
-    
+def player_profile(request, player_identifier):
+    player = Player.objects.get(identifier=player_identifier)
+    user = player.user
+    return render(request, 'bump/profile.html', {'player_user':user,'player' : player})
+
+@login_required    
 def player_info(request):
     return render(request, 'bump/players.html', {'players' : Player.objects.order_by('first_name')})

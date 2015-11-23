@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Le Bump</title>
-    </head>
-
-    <body>
+{% extends 'bump/base.html' %}
+{% block content %}
         <h1>Register with Le Bump</h1>
 
         {% if registered %}
@@ -19,5 +14,4 @@
             <input type="submit" name="submit" value="Register" />
         </form>
         {% endif %}
-    </body>
-</html>
+{% endblock %}

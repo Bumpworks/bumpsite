@@ -17,6 +17,6 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-	url(r'^bump/', include('bump.urls')),
+	url(r'^bump/', include('bump.urls', namespace="bump")),
     url(r'^admin/', include(admin.site.urls)),
 ]

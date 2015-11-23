@@ -1,8 +1,12 @@
+{% extends 'bump/base.html' %}
+
 <script type="text/javascript">
      function setFocusToBox(){
         document.getElementById("id_game_text").focus();
      }
 </script>
+
+{% block content %}
 <body onload='setFocusToBox()'>
 <form action="/bump/submit-game/" method="POST">
     {% csrf_token %}
@@ -22,3 +26,4 @@
 {% endfor %}
 </select
 </body>
+{% endblock %}

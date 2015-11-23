@@ -1,20 +1,14 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Le Bump</title>
-    </head>
-
-    <body>
-        <h1>Create a New Player</h1>
-        {% if created %}
-        <strong>Thank you for creating a player. They may now be submitted in games.</strong>
-        <a href="/bump/submit-game/">Submit a game.</a>
-        {% else %}
-        <form id="user_form" method="post" action="/bump/create-player/">
-            {% csrf_token %}
-            {{ player_form.as_p }}
-            <input type="submit" name="submit" value="Register" />
-        </form>
-        {% endif %}
-    </body>
-</html>
+{% extends 'bump/base.html' %}
+{% block content %}
+    <h1>Create a New Player</h1>
+    {% if created %}
+    <strong>Thank you for creating a player. They may now be submitted in games.</strong>
+    <a href="/bump/submit-game/">Submit a game.</a>
+    {% else %}
+    <form id="user_form" method="post" action="/bump/create-player/">
+        {% csrf_token %}
+        {{ player_form.as_p }}
+        <input type="submit" name="submit" value="Register" />
+    </form>
+    {% endif %}
+{% endblock %}

@@ -1,15 +1,16 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Le Bump</title>
-    </head>
+{% extends 'bump/base.html' %}
+{% block content %}
 
-    <body>
-        {% if player.user %}
-        Registered! Username: {{ player.user }}
-        {% else %}
-        Not registered.
-        {% endif %}
+    {% if player_user %}
+    Registered! Username: {{ player_user.username }}
+    {% else %}
+    Not registered.
+    {% endif %}
+    {% if player %}
+    Player exists! Player identifier: {{ player_user.identifier }}
+    {% else %}
+    Player does not exist.
+    {% endif %}
+    
 
-    </body>
-</html>
+{% endblock %}
