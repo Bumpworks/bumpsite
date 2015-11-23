@@ -27,7 +27,7 @@ class Game(models.Model):
         ('hw', 'Hold White'),
         ('hr', 'Hold Red'),
         )
-    advantage = models.CharField(choices=advantage_choices_tuples, max_length=2, default='')
+    advantage = models.CharField(choices=advantage_choices_tuples, max_length=2, default='', blank=True)
     table_choices_tuples = (
         ('ty', 'Brunswick'),
         ('wi', 'Gray Table'),
@@ -43,7 +43,7 @@ class Game(models.Model):
         ('nfg', 'New Age for Glory'),
         ('swe', 'Sweep'),
         )
-    finisher = models.CharField(choices=finisher_choices_tuples, max_length=3,default='')
+    finisher = models.CharField(choices=finisher_choices_tuples, max_length=3,default='',blank=True)
     advantage_choices = [choice[0] for choice in advantage_choices_tuples]
     finisher_choices = [choice[0] for choice in finisher_choices_tuples]
     
