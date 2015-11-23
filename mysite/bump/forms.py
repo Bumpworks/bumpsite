@@ -8,7 +8,12 @@ class PlayerForm(forms.ModelForm):
     class Meta:
         model = Player
         fields = ('identifier', 'first_name','last_name','duke','class_year','netid')
-
+    def clean(self):
+        cd = self.cleaned_data
+        id = cd.get('identifier')
+        if Player.objects.filter(identifier__iexact=id).exists():
+            raise ValidationError('You tried to create a player with identifier'+id+', but that player already exists (case insensitive). Dingus!')
+        return cd
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     player = forms.ModelChoiceField(queryset=Player.objects.filter(user=None))

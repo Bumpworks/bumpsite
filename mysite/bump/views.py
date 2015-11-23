@@ -122,7 +122,7 @@ def create_player(request):
             player = player_form.save()
             created = True
         else:
-            print user_form.errors
+            print player_form.errors
     else:
         player_form = PlayerForm()
     return render(request,
