@@ -68,7 +68,7 @@ def rankings(request):
             return 24
     def record(ranked_dict_entry):
         return "("+str(ranked_dict_entry[0])+"-"+str(ranked_dict_entry[1])+")"
-    games = Game.objects.select_related('winner','loser')
+    games = Game.objects.order_by('date').select_related('winner','loser')
     players = Player.objects.all()
     elo_dict = {}
     ranked_dict = {}
