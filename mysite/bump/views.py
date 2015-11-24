@@ -50,6 +50,7 @@ def submit_game(request):
                     game = Game(winner=winner,loser=loser,advantage=advantage,finisher=finisher,table=table,date=date,recorder=game_recorder)
                     game.save()
             form = GameSubmissionForm()
+            return HttpResponseRedirect('')
     else:
         form = GameSubmissionForm()
     feed_games = Game.objects.order_by('-pk')[:20]
