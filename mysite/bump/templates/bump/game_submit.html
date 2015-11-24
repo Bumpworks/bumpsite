@@ -1,10 +1,6 @@
 {% extends 'bump/base.html' %}
 
-<script type="text/javascript">
-     function setFocusToBox(){
-        document.getElementById("id_game_text").focus();
-     }
-</script>
+
 
 {% block content %}
 <body onload='setFocusToBox()'>
@@ -21,4 +17,9 @@
     </ul>
 {% endif %}
 </body>
+<script type="text/javascript">
+     function setFocusToBox(){
+        document.getElementById("id_game_text").focus();
+     }
+</script>
 {% endblock %}
