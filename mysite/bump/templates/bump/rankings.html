@@ -1,5 +1,10 @@
 {% extends 'bump/base.html' %}
 {% block content %}
+    <form id="rankings_form" method="post" action="/bump/rankings/">
+        {% csrf_token %}
+        {{ rankings_form.as_p }}
+        <input type="submit" name="submit" value="Run Rankings" />
+    </form>
     {% if elo_dict %}
     <ol>
     {% for player_identifier, player_rating, player_record in elo_dict %}

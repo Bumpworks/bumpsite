@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Player, Game
 import math
-from .forms import GameSubmissionForm, UserForm, PlayerForm
+from .forms import GameSubmissionForm, UserForm, PlayerForm, RankingsForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -68,7 +68,16 @@ def rankings(request):
             return 24
     def record(ranked_dict_entry):
         return "("+str(ranked_dict_entry[0])+"-"+str(ranked_dict_entry[1])+")"
+    tables = None
+    if request.method=='POST':
+        form = RankingsForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            tables = cd.get('tables')
+    
     games = Game.objects.select_related('winner','loser')
+    if tables != None:
+        games = games.filter(table__in=tables)
     players = Player.objects.all()
     elo_dict = {}
     ranked_dict = {}
@@ -89,7 +98,7 @@ def rankings(request):
         elo_dict[game.loser] -= delta * kFactor(loser_elo)
     pruned_elo = [(key,value,record(ranked_dict[key])) for key,value in elo_dict.items() if value != 1000]
     sorted_elo = sorted(pruned_elo, key=lambda x: -x[1])
-    return render(request, 'bump/rankings.html', {'elo_dict': sorted_elo})
+    return render(request, 'bump/rankings.html', {'rankings_form': RankingsForm(),'elo_dict': sorted_elo})
     
 def register(request):
     registered = False

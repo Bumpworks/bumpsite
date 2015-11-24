@@ -76,5 +76,18 @@ class GameSubmissionForm(forms.Form):
             
         return cd
         
+class RankingsForm(forms.Form):
+    beginning_date = forms.DateTimeField(widget=forms.SplitDateTimeWidget,initial=timezone.now)
+    end_date = forms.DateTimeField(widget=forms.SplitDateTimeWidget,initial=timezone.now)
+    tables = forms.MultipleChoiceField(choices=Game.table_choices_tuples, widget=forms.CheckboxSelectMultiple())
+    
+    
+    def clean(self):
+        cd = self.cleaned_data
+ 
+                
+                
+            
+        return cd
         
         
