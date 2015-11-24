@@ -12,7 +12,7 @@ class PlayerForm(forms.ModelForm):
         cd = self.cleaned_data
         id = cd.get('identifier')
         if Player.objects.filter(identifier__iexact=id).exists():
-            raise ValidationError('You tried to create a player with identifier'+id+', but that player already exists (case insensitive). Dingus!')
+            raise ValidationError('You tried to create a player with identifier '+id+', but that player already exists (case insensitive). Dingus!')
         return cd
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
