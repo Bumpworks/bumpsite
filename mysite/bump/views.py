@@ -138,7 +138,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/bump/')
+                return HttpResponseRedirect('/')
             else:
                 return HttpResponse("Your Le Bump account is disabled.")
         else:
@@ -151,7 +151,7 @@ from django.contrib.auth import logout
 @login_required
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect('/bump/')
+    return HttpResponseRedirect('/')
     
 def player_profile(request, player_identifier):
     player = Player.objects.get(identifier=player_identifier)

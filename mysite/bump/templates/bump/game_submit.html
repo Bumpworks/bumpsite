@@ -4,7 +4,7 @@
 
 {% block content %}
 <body onload='setFocusToBox()'>
-<form action="/bump/submit-game/" method="POST">
+<form action="/submit-game/" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Submit</button>

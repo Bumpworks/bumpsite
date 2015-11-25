@@ -1,6 +1,6 @@
 {% extends 'bump/base.html' %}
 {% block content %}
-        <form id="login_form" method="post" action="/bump/login/">
+        <form id="login_form" method="post" action="/login/">
             {% csrf_token %}
             Username: <input type="text" name="username" value="" size="50" />
             <br />

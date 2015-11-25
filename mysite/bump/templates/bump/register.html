@@ -4,11 +4,11 @@
 
         {% if registered %}
         <strong>Thank you for registering!</strong>
-        <a href="/bump/">Return to the homepage.</a><br />
+        <a href="/">Return to the homepage.</a><br />
         {% else %}
         <strong>Register here!</strong><br />
 
-        <form id="user_form" method="post" action="/bump/register/">
+        <form id="user_form" method="post" action="/register/">
             {% csrf_token %}
             {{ user_form.as_p }}
             <input type="submit" name="submit" value="Register" />
