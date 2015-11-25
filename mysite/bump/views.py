@@ -53,7 +53,7 @@ def submit_game(request):
             return HttpResponseRedirect('')
     else:
         form = GameSubmissionForm()
-    feed_games = Game.objects.order_by('-pk')[:20]
+    feed_games = Game.objects.order_by('-pk')[:15]
     return render(request,'bump/game_submit.html',{'form':form, 'feed':feed_games, 'players':Player.objects.all()})
 
     
