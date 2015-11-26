@@ -138,7 +138,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/submit-game')
             else:
                 return HttpResponse("Your Le Bump account is disabled.")
         else:
