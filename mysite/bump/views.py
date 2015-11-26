@@ -157,7 +157,6 @@ def player_profile(request, player_identifier):
     player = Player.objects.get(identifier=player_identifier)
     user = player.user
     return render(request, 'bump/profile.html', {'player_user':user,'player' : player})
-
-@login_required    
+  
 def player_info(request):
     return render(request, 'bump/players.html', {'players' : Player.objects.order_by('first_name')})
