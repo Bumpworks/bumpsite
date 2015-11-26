@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Player(models.Model):
     identifier = models.CharField(max_length = 30)  
-    user = models.OneToOneField(User, null=True)
+    user = models.OneToOneField(User, null=True, blank = True)
     class_year = models.IntegerField()
     first_name = models.CharField(max_length = 30)
     last_name = models.CharField(max_length = 30)
