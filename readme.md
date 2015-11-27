@@ -1,5 +1,6 @@
 The goal of this project is to create a django driven website
-for the le bump community at duke university. Currently,
-I have implemented the two main dataclasses; player, game.
+for the le bump community at duke university. 
 
-I have tried to document the code well. 
+This site will host game and player information, display weekly rankings, create a social space for bumpers, and more.
+
+Check out progress here: http://bump.colab.duke.edu/
