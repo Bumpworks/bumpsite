@@ -16,7 +16,7 @@ class PlayerForm(forms.ModelForm):
         return cd
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
-    player = forms.ModelChoiceField(queryset=Player.objects.filter(user=None))
+    player = forms.ModelChoiceField(queryset=Player.objects.order_by("identifier").filter(user=None))
 
     class Meta:
         model = User
