@@ -1,7 +1,5 @@
 {% extends 'bump/base.html' %}
 
-
-
 {% block content %}
 <body onload='setFocusToBox()'>
 <form action="/submit-game/" method="POST">
@@ -17,9 +15,11 @@
     </ul>
 {% endif %}
 </body>
+
 <script type="text/javascript">
      function setFocusToBox(){
         document.getElementById("id_game_text").focus();
      }
 </script>
+
 {% endblock %}
