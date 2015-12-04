@@ -34,6 +34,7 @@ class Game(models.Model):
         ('ka', 'Kaighn Table'),
         ('me', 'Mehul/Adil/Bryan Table'),
         ('lo', 'Loop Table'),
+        ('re', 'Rectangle Table'),
     )
     table = models.CharField(choices=table_choices_tuples, max_length=2,default='ty')
     finisher_choices_tuples = (

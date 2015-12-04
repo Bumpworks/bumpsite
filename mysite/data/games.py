@@ -1,6 +1,6 @@
 from django.utils import timezone
 from .models import Player, Game
-def parse(file):
+def parse(file,table_name):
     mFile=open(file,'r')
     currentDate="replace"
     for line in mFile:
@@ -24,3 +24,8 @@ def addData(namey, date,opponent):
     datey = array[2]+'-'+array[0]+'-'+array[1]
     g = Game(winner=Player.objects.get(name=namey), loser=Player.objects.get(name=opponent), date=datey)
     g.save()
+    
+parse('bp-site-brunswick.csv','ty')
+parse('bp-site-gray.csv','wi')
+parse('bp-site-mehul.csv','me')
+parse('bp-site-rectangle.csv','re')
