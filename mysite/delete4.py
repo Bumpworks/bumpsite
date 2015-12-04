@@ -14,7 +14,3 @@ def parse(file):
         p = Player(identifier=line[0],class_year=cy,first_name=line[1],last_name=line[2],duke=d)
         p.save()
     mFile.close()
-		
-
-
-parse('player_information.csv')
