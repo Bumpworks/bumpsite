@@ -15,4 +15,4 @@ def parse(file):
         p.save()
     mFile.close()
     
-parse('bp-site-playerinfo.csv')
+parse('data/bp-site-playerinfo.csv')
