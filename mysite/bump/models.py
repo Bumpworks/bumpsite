@@ -42,9 +42,9 @@ class Game(models.Model):
         ('bfg', 'Bump for Glory'),
         ('jfg', 'Jump for Glory'),
         ('nfg', 'New Age for Glory'),
-        ('swe', 'Sweep'),
+        ('sweep', 'Sweep'),
         )
-    finisher = models.CharField(choices=finisher_choices_tuples, max_length=3,default='',blank=True)
+    finisher = models.CharField(choices=finisher_choices_tuples, max_length=5,default='',blank=True)
     advantage_choices = [choice[0] for choice in advantage_choices_tuples]
     finisher_choices = [choice[0] for choice in finisher_choices_tuples]
     
