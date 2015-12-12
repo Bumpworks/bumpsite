@@ -60,18 +60,25 @@ class GameSubmissionForm(forms.Form):
             tags = gt[cut_index:]
             finisher_selected = False
             advantage_selected = False
+            bbreak = False
+            sweep = False
             for tag in tags:
                 if tag in Game.advantage_choices:
+                    if tag[0] == 'b':
+                        bbreak = True
                     if advantage_selected:
                         raise ValidationError(tag + " is the second advantage codeword in a line. You can only have one.")
                     advantage_selected = True
                 elif tag in Game.finisher_choices:
+                    if tag == 'sweep':
+                        sweep = True
                     if finisher_selected:
                         raise ValidationError(tag + " is the second finisher codeword in a line. You can only have one.")
                     finisher_selected = True
                 else:
                     raise ValidationError(tag+" is not a valid word.")
-                
+            if bbreak and sweep:
+                raise ValidationError('It\'s impossible to break AND sweep, ya dingus.')
                 
             
         return cd
