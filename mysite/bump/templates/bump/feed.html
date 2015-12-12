@@ -3,7 +3,7 @@
     {% if games_feed %}
     <ul>
     {% for game in games_feed %}
-        <li>{{ game.date }} {{ game.winner }} {{ game.loser }}</li>
+        <li>{{ game.date }} {{ game }}</li>
     {% endfor %}
     </ul>
     {% endif %}

@@ -50,5 +50,12 @@ class Game(models.Model):
     
 
     def __unicode__(self):
-        return str(self.winner) +' '+ str(self.loser)
+        finisher_string = ''
+        if self.finisher != '':
+            finisher_string = self.finisher
+        table_string = ''
+        if self.table != 'ty':
+            table = [y for x,y in self.table_choices_tuples if x == self.table]
+            table_string = '('+table[0]+')'
+        return str(self.winner) +' '+ str(self.loser)+' '+self.advantage+' '+finisher_string+' '+table_string
 
