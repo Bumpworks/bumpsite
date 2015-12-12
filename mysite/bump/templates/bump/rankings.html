@@ -1,9 +1,9 @@
 {% extends 'bump/base.html' %}
 {% block content %}
-    {% if elo_dict %}
+    {% if players %}
     <ol>
-    {% for player_identifier, player_rating, player_record in elo_dict %}
-        <li>{{ player_identifier }} {{ player_rating|floatformat:0 }} {{ player_record }}</li>
+    {% for player in players %}
+        <li>{{ player.identifier }} {{ player.elo }} ({{player.wins}}-{{player.losses}})</li>
     {% endfor %}
     </ol>
     {% endif %}

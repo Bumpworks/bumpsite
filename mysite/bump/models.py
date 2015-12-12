@@ -11,7 +11,12 @@ class Player(models.Model):
     last_name = models.CharField(max_length = 30)
     duke = models.BooleanField(default=True)
     netid = models.CharField(max_length = 7, null = True, blank = True)
+    wins = models.IntegerField(default=0, blank=True)
+    losses = models.IntegerField(default=0, blank=True)
+    elo = models.IntegerField(default=1000, blank=True)
     
+    def ranked(self):
+        return self.wins >= 7 and self.wins + self.losses >= 15
     def __unicode__(self):
         return self.identifier
 
