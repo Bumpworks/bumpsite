@@ -1,5 +1,7 @@
 {% extends 'bump/base.html' %}
 {% block content %}    
+    <h5>{{hour_count}} games past hour, {{day_count}} past 24 hours, {{week_count}} past 7 days, {{month_count}} past 30 days</h5>
+    <h5>{{player_count}} players have bumped, {{player_week}} new players in the past 7 days</h5>
     {% if games_feed %}
     <ul>
     {% for game in games_feed %}

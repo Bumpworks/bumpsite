@@ -14,15 +14,17 @@ def index(request):
     ordered_games = Game.objects.order_by('-date')
     feed_games = ordered_games[:20]
     now = datetime.now()
-    month_games = ordered_games.filter(date__lte = (now - timedelta(days = 7)))
-    week_games = month_games.filter(date__lte = (now - timedelta(days = 30)))
-    day_games = week_games.filter(date__lte = (now - timedelta(days=1)))
-    hour_games = day_games.filter(date__lte = (now - timedelta(hours=1)))
+    month_games = ordered_games.filter(date__gte = (now - timedelta(days = 30)))
+    week_games = month_games.filter(date__gte = (now - timedelta(days = 7)))
+    day_games = week_games.filter(date__gte = (now - timedelta(days=1)))
+    hour_games = day_games.filter(date__gte = (now - timedelta(hours=1)))
     context = {
         'month_count' : month_games.count(),
         'week_count' : week_games.count(),
         'day_count' : day_games.count(),
         'hour_count' : hour_games.count(),
+        'player_count' : Player.objects.all().count(),
+        'player_week' : Player.objects.filter(start_date__gte = (now - timedelta(days=7))).count(),
         'games_feed' : feed_games
     }
     return render(request,'bump/feed.html',context)

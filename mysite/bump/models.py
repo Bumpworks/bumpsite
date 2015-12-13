@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from datetime import datetime
 
 
 class Player(models.Model):
@@ -14,6 +15,7 @@ class Player(models.Model):
     wins = models.IntegerField(default=0, blank=True)
     losses = models.IntegerField(default=0, blank=True)
     elo = models.IntegerField(default=1000, blank=True)
+    start_date = models.DateField(default=datetime.now, blank=True)
     
     def ranked(self):
         return self.wins >= 7 and self.wins + self.losses >= 15
