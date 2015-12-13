@@ -20,7 +20,7 @@ def saveElo(elo_dict):
     for player in elo_dict.keys():
         player.elo = int(elo_dict[player])
         player.save()
-games = Game.objects.order_by('date').select_related('winner','loser')
+games = Game.objects.order_by('date','pk').select_related('winner','loser')
 players = Player.objects.all()
 elo_dict = {}
 ranked_dict = {}
