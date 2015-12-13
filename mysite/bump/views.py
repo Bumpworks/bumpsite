@@ -74,7 +74,9 @@ def submit_game(request):
 
     
 def rankings(request):
-    on_the_bump = Player.objects.filter(wins__lt = 7).order_by('-wins')[:10]
+    on_the_bump = Player.objects.filter(wins__lte = 15).order_by('-wins')
+    on_the_bump = [x for x in on_the_bump if not x.ranked()]
+    on_the_bump = on_the_bump[:10]
     players = Player.objects.all().order_by('-elo')
     players = [x for x in players if x.ranked()]
     return render(request, 'bump/rankings.html', {'players': players, 'on_the_bump' : on_the_bump})
