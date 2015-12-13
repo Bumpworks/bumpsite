@@ -25,13 +25,16 @@ class UserForm(forms.ModelForm):
         
         
 class GameSubmissionForm(forms.Form):
-    date = forms.DateTimeField(widget=forms.SplitDateTimeWidget,initial=timezone.now)
+    date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=False)
     table = forms.ChoiceField(choices=Game.table_choices_tuples)
     game_text = forms.CharField(widget=forms.Textarea)
     
     def clean(self):
         cd = self.cleaned_data
         text = cd.get('game_text')
+        date = cd.get('date')
+        if date is None:
+            cd['date'] = timezone.now()
         if text is None:
             raise ValidationError('You\'ve entered nothing. Dingus!')
         games = [s.strip() for s in text.splitlines()]
