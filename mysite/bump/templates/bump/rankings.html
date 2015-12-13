@@ -7,4 +7,12 @@
     {% endfor %}
     </ol>
     {% endif %}
+    {% if on_the_bump %}
+    <h4>On the bump!</h4>
+    <ol>
+    {% for player in on_the_bump %}
+        <li>{{ player.identifier }} ({{player.wins}}-{{player.losses}})</li>
+    {% endfor %}
+    </ol>
+    {% endif %}
 {% endblock %}

@@ -74,9 +74,10 @@ def submit_game(request):
 
     
 def rankings(request):
+    on_the_bump = Player.objects.filter(wins__lt = 7).order_by('-wins')[:10]
     players = Player.objects.all().order_by('-elo')
     players = [x for x in players if x.ranked()]
-    return render(request, 'bump/rankings.html', {'players': players})
+    return render(request, 'bump/rankings.html', {'players': players, 'on_the_bump' : on_the_bump})
     
 def register(request):
     registered = False
