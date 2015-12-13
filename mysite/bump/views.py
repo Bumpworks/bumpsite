@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 
 def index(request):
-    ordered_games = Game.objects.order_by('-date')
+    ordered_games = Game.objects.order_by('-date','-pk')
     feed_games = ordered_games[:20]
     now = datetime.now()
     month_games = ordered_games.filter(date__gte = (now - timedelta(days = 30)))
