@@ -2,12 +2,13 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Player(models.Model):
     identifier = models.CharField(max_length = 30)  
     user = models.OneToOneField(User, null=True, blank = True)
-    class_year = models.IntegerField()
+    class_year = models.IntegerField(validators=[MinValueValidator(1970),MaxValueValidator(2050)])
     first_name = models.CharField(max_length = 30)
     last_name = models.CharField(max_length = 30)
     duke = models.BooleanField(default=True)
