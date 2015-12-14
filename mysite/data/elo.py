@@ -1,5 +1,6 @@
 from bump.models import Player, Game
 import math
+
 def isRanked(ranked_dict, player):
     return ranked_dict[player][0] >= 7 and ranked_dict[player][0] + ranked_dict[player][1] >= 15
 def kFactor(elo):
