@@ -7,9 +7,22 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
+from django.core import serializers
+from django.db.models import Q
 
-
-
+def api_games(request):
+    data = serializers.serialize("json", Game.objects.all())
+    return HttpResponse(data, content_type='application/json')
+def api_games_by(request, player):
+    data = serializers.serialize("json", Game.objects.filter(Q(winner__identifier=player) | Q(loser__identifier=player)))
+    return HttpResponse(data, content_type='application/json')
+def api_games_between(request, player1, player2):
+    players = [player1, player2]
+    data = serializers.serialize("json", Game.objects.filter(winner__identifier__in=players, loser__identifier__in=players))
+    return HttpResponse(data, content_type='application/json')
+def api_players(request):
+    data = serializers.serialize("json", Player.objects.all())
+    return HttpResponse(data, content_type='application/json')
 def index(request):
     ordered_games = Game.objects.order_by('-date','-pk')
     feed_games = ordered_games[:20]
