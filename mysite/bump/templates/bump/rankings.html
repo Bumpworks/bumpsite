@@ -1,6 +1,9 @@
 {% extends 'bump/base.html' %}
 {% block content %}
     {% if players %}
+    Rankings are updated Fridays at 5pm.
+    <br>
+    <br/>
     <ol>
     {% for player in players %}
         <li>{{ player.identifier }} {{ player.elo }} ({{player.wins}}-{{player.losses}})</li>
