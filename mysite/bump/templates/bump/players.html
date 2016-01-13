@@ -1,7 +1,8 @@
 {% extends 'bump/base.html' %}
 {% block content %}
     {% if players %}
-    <table>
+    <table class="table table-striped table-condensed table-hover">
+      <thead>
         <tr>
             <th>Identifier</th>
             <th>First Name</th>
@@ -10,16 +11,19 @@
             <th>Class</th>
             <th>Registered</th>
         </tr>
+      </thead>
+      <tbody>  
     {% for p in players %}
         <tr>
-            <td>{{ p.identifier }}</td>
-            <td>{{ p.first_name }}</td>
-            <td>{{ p.last_name}}</td>
-            <td>{% if p.duke %} X {% endif %}</td>
-            <td>{{ p.class_year }}</td>
-            <td>{% if p.user %} X {% endif %}</td>
+            <td>{{p.identifier}}</td>
+            <td>{{p.first_name}}</td>
+            <td>{{p.last_name}}</td>
+            <td>{%if p.duke%} X {% endif %}</td>
+            <td>{{p.class_year}}</td>
+            <td>{%if p.user%} X {% endif %}</td>
         </tr>
     {% endfor %}
+      </tbody>
     </table>
     {% endif %}
 {% endblock %}
