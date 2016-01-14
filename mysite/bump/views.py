@@ -6,7 +6,8 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from django.utils import timezone
 from django.core import serializers
 from django.db.models import Q
 
@@ -31,6 +32,26 @@ def index(request):
     week_games = month_games.filter(date__gte = (now - timedelta(days = 7)))
     day_games = week_games.filter(date__gte = (now - timedelta(days=1)))
     hour_games = day_games.filter(date__gte = (now - timedelta(hours=1)))
+
+    start_date = timezone.now().date()
+    end_date = start_date + timedelta( days=1 ) 
+    games_today = Game.objects.filter(date__range=(start_date, end_date))
+    def tupleify(playerA, playerB):
+        if playerA < playerB:
+            return (playerA,playerB),True
+        else:
+            return (playerB,playerA),False
+    series_dict = {}
+    for game in games_today:
+        tuple,first_player_won = tupleify(game.winner.identifier,game.loser.identifier)
+        if tuple not in series_dict.keys():
+            series_dict[tuple] = [0,0]
+        if first_player_won:
+            series_dict[tuple][0]+=1
+        else:
+            series_dict[tuple][1]+=1
+    series_tuples = sorted(series_dict.items(), key=lambda e: -e[1][0]-e[1][1])
+    series_tuples = [x for x in series_tuples if x[1][0]+x[1][1] >= 2]
     context = {
         'month_count' : month_games.count(),
         'week_count' : week_games.count(),
@@ -38,7 +59,8 @@ def index(request):
         'hour_count' : hour_games.count(),
         'player_count' : Player.objects.all().count(),
         'player_week' : Player.objects.filter(start_date__gte = (now - timedelta(days=7))).count(),
-        'games_feed' : feed_games
+        'games_feed' : feed_games,
+        'series_tuples' : series_tuples
     }
     return render(request,'bump/feed.html',context)
 

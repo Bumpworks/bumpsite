@@ -9,4 +9,17 @@
     {% endfor %}
     </ul>
     {% endif %}
+    {% if series_tuples %}
+    <h5>Top Series for Today</h5>
+    <ol>
+    {% for series in series_tuples %}
+        {% if series.1.0 >= series.1.1 %}
+        <li>{{ series.0.0 }} {{series.1.0}}-{{series.1.1}} {{series.0.1}}</li>
+        {% else %}
+        <li>{{ series.0.1 }} {{series.1.1}}-{{series.1.0}} {{series.0.0}}</li>
+        {% endif %}
+    {% endfor %}
+    </ol>
+    {% endif %}
+    
 {% endblock %}
