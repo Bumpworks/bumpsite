@@ -66,4 +66,10 @@ class Game(models.Model):
             table = [y for x,y in self.table_choices_tuples if x == self.table]
             table_string = '('+table[0]+')'
         return str(self.winner) +' '+ str(self.loser)+' '+self.advantage+' '+finisher_string+' '+table_string
+        
+class NotificationSetting(models.Model):
+    user = models.OneToOneField(User, blank = True)
+    
+    def __unicode__(self):
+        return str(user)+" "+user.player.identifier
 

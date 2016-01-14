@@ -1,8 +1,12 @@
 from django import forms
-from .models import Player, Game
+from .models import Player, Game, NotificationSetting
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth.models import User
+
+class NotificationForm(forms.ModelForm):
+    class Meta:
+        model = NotificationSetting
 
 class PlayerForm(forms.ModelForm):
     class Meta:
