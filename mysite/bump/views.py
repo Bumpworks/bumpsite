@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Player, Game
 import math
-from .forms import GameSubmissionForm, UserForm, PlayerForm
+from .forms import GameSubmissionForm, UserForm, PlayerForm, GameEditForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -107,7 +107,33 @@ def submit_game(request):
     feed_games = Game.objects.order_by('-pk')[:15]
     return render(request,'bump/game_submit.html',{'form':form, 'feed':feed_games, 'players':Player.objects.all()})
 
-    
+@login_required
+def recent_submitted_games(request):
+    if request.user.is_authenticated():
+        user = request.user
+        recent_submitted_games = Game.objects.filter(date__gte= (timezone.now() - timedelta(minutes=20)),recorder=user).order_by('-date')
+    return render(request,'bump/recent_submitted.html',{'recent_submitted_games' : recent_submitted_games})
+def edit_game(request,game_pk):
+    game = get_object_or_404(Game,pk=game_pk)
+    if request.user.is_authenticated():
+        user = request.user
+        if game.recorder != user:
+            return HttpResponse('You can not edit this game as you did not submit it.')
+        if game.date < (timezone.now()-timedelta(minutes=20)):
+            return HttpResponse('You submitted this game, but it is past 20 minutes since you submitted it, and as such cannot be editted. Contact an admin.')
+        if request.method == 'POST':
+            form = GameEditForm(data=request.POST, instance=game)
+            if form.is_valid():
+                if form.is_valid():
+                    form.save()
+                    return HttpResponseRedirect('/recent-submitted/')
+
+                else:
+                    print form.errors
+        else:
+            form = GameEditForm(instance=game)
+    return render(request,'bump/edit_game.html',{'form':form, 'game':game})
+
 def rankings(request):
     on_the_bump = Player.objects.filter(wins__lte = 15).order_by('-wins')
     on_the_bump = [x for x in on_the_bump if not x.ranked()]

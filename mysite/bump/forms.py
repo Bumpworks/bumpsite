@@ -22,7 +22,19 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username','email', 'password')
 
-        
+class GameEditForm(forms.ModelForm):
+    class Meta:
+        model = Game
+        fields = ('table','advantage','finisher')
+    def clean(self):
+        cd = self.cleaned_data
+        ad = cd.get('advantage')
+        fi = cd.get('finisher')
+        if len(ad) > 0:
+            if ad[0] == 'b':
+                if fi == 'sweep':
+                    raise ValidationError('You cannot sweep and break, dingus!')
+        return cd
         
 class GameSubmissionForm(forms.Form):
     date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=False)

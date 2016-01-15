@@ -1,0 +1,12 @@
+{% extends 'bump/base.html' %}
+{% block content %}    
+    <h4>Games you have submitted in the past 20 minutes:</h4>
+    {% if recent_submitted_games %}
+    <ul>
+    {% for game in recent_submitted_games %}
+        <li><a href='/edit-game/{{ game.pk }}'>{{ game.date }} {{ game }}</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    
+{% endblock %}
