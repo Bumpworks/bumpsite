@@ -2,7 +2,7 @@
 {% block content %}
     {% if player %}
         <h4>{{ player.first_name }} {{ player.last_name }}</h4>
-        Identifier: {{ player.identifier }}
+        Identifier: {{ player.identifier }} <br/>
         Record: {{ player.wins }}-{{ player.losses }} <br/>
         Elo: {{ player.elo }}<br/>
         First Bumped: {{ player.start_date }}<br/>
