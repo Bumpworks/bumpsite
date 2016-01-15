@@ -1,16 +1,23 @@
 {% extends 'bump/base.html' %}
 {% block content %}
-
+    {% if player %}
+        <h4>{{ player.first_name }} {{ player.last_name }}</h4>
+        Identifier: {{ player.identifier }}
+        Record: {{ player.wins }}-{{ player.losses }} <br/>
+        Elo: {{ player.elo }}<br/>
+        First Bumped: {{ player.start_date }}<br/>
+        Most recent games:
+        <ul>
+        {% for game in recent_games %}
+            <li>{{ game.date }} {{ game }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    
     {% if player_user %}
     Registered! Username: {{ player_user.username }}
     {% else %}
     Not registered.
-    {% endif %}
-    <br />
-    {% if player %}
-    Player exists! Player identifier: {{ player.identifier }}
-    {% else %}
-    Player does not exist.
     {% endif %}
     
 

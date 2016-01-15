@@ -178,9 +178,10 @@ def user_logout(request):
     return HttpResponseRedirect('/')
     
 def player_profile(request, player_identifier):
-    player = Player.objects.get(identifier=player_identifier)
+    player = Player.objects.get(identifier__iexact=player_identifier)
+    recent_games = Game.objects.filter(Q(winner__identifier=player_identifier) | Q(loser__identifier=player_identifier))[:20]
     user = player.user
-    return render(request, 'bump/profile.html', {'player_user':user,'player' : player})
+    return render(request, 'bump/profile.html', {'player_user':user,'player' : player,'recent_games':recent_games})
   
 def player_info(request):
     return render(request, 'bump/players.html', {'players' : Player.objects.order_by('first_name')})
