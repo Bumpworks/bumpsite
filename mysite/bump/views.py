@@ -27,13 +27,13 @@ def api_players(request):
 def index(request):
     ordered_games = Game.objects.order_by('-date','-pk')
     feed_games = ordered_games[:20]
-    now = datetime.now()
+    now = timezone.now()
     month_games = ordered_games.filter(date__gte = (now - timedelta(days = 30)))
     week_games = month_games.filter(date__gte = (now - timedelta(days = 7)))
     day_games = week_games.filter(date__gte = (now - timedelta(days=1)))
     hour_games = day_games.filter(date__gte = (now - timedelta(hours=1)))
 
-    start_date = timezone.now().date()
+    start_date = timezone.localtime(timezone.now()).date()
     end_date = start_date + timedelta( days=1 ) 
     games_today = Game.objects.filter(date__range=(start_date, end_date))
     def tupleify(playerA, playerB):
