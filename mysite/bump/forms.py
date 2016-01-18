@@ -36,6 +36,11 @@ class GameEditForm(forms.ModelForm):
                     raise ValidationError('You cannot sweep and break, dingus!')
         return cd
         
+class RankingsSimulationForm(forms.Form):
+    start_date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=True)
+    end_date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=True)
+    
+        
 class GameSubmissionForm(forms.Form):
     date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=False)
     table = forms.ChoiceField(choices=Game.table_choices_tuples)

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Player, Game
 import math
-from .forms import GameSubmissionForm, UserForm, PlayerForm, GameEditForm
+from .forms import GameSubmissionForm, UserForm, PlayerForm, GameEditForm, RankingsSimulationForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,8 @@ from datetime import datetime, timedelta, date
 from django.utils import timezone
 from django.core import serializers
 from django.db.models import Q
+from django.contrib.auth import logout
+from .elo import eloRecords
 
 def api_games(request):
     data = serializers.serialize("json", Game.objects.all())
@@ -140,8 +142,19 @@ def rankings(request):
     on_the_bump = on_the_bump[:10]
     players = Player.objects.all().order_by('-elo')
     players = [x for x in players if x.ranked()]
-    return render(request, 'bump/rankings.html', {'players': players, 'on_the_bump' : on_the_bump})
     
+    return render(request, 'bump/rankings.html', {'players': players, 'on_the_bump' : on_the_bump})
+def rankings_sim(request):
+    if request.method == 'POST':
+        form = RankingsSimulationForm(data=request.POST)
+        if form.is_valid():
+            pass
+            
+        else:
+            print form.errors
+    else:
+        form = RankingsSimulationForm()
+    return render(request, 'bump/rankings_sim.html', {'form': form})
 def register(request):
     registered = False
     if request.method == 'POST':
@@ -196,7 +209,6 @@ def user_login(request):
             return HttpResponse("Invalid login details supplied.")
     else:
         return render(request, 'bump/login.html', {})
-from django.contrib.auth import logout
 
 @login_required
 def user_logout(request):
