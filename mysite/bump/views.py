@@ -145,16 +145,46 @@ def rankings(request):
     
     return render(request, 'bump/rankings.html', {'players': players, 'on_the_bump' : on_the_bump})
 def rankings_sim(request):
+    player_elo_tuples = None
     if request.method == 'POST':
         form = RankingsSimulationForm(data=request.POST)
         if form.is_valid():
-            pass
-            
+            cd = form.cleaned_data
+            start = cd.get('start_date')
+            end = cd.get('end_date')
+            if start == None:
+                start = '2000-01-01'
+            if end == None:
+                end = '2199-01-01'
+            table_booleans = [cd.get('brunswick_table'),cd.get('will_table'),cd.get('kaighn_table'),cd.get('adil_table'),cd.get('loop_table'),cd.get('rectangle_table')]
+            active_players_only = cd.get('active_players_only')
+            chosen_tables = [x for i,(x,y) in enumerate(Game.table_choices_tuples) if table_booleans[i]]
+            all_games = Game.objects.all().select_related('winner','loser')
+            games = all_games.filter(table__in=chosen_tables,date__lte=end,date__gte=start).order_by('date','pk')
+            elo_dict,ranked_dict = eloRecords(games,games)
+            def player_ranked(player):
+                wins = ranked_dict[player][0]
+                losses = ranked_dict[player][1]
+                return wins >= 7 and wins+losses>=15
+            ranked_players = [player for player in Player.objects.all() if player_ranked(player)]
+            player_elo_tuples = [(player,elo_dict[player]) for player in ranked_players]
+            player_elo_tuples = sorted(player_elo_tuples, key=lambda e: -e[1])
+            player_elo_tuples = [(player,elo,ranked_dict[player][0],ranked_dict[player][1]) for player,elo in player_elo_tuples]
+            if active_players_only:
+                final_tuples = []
+                for tuple in player_elo_tuples:
+                    player,_,_,_ = tuple
+                    date1 = Game.objects.filter(winner=player).order_by('-date')[0].date
+                    date2 = Game.objects.filter(loser=player).order_by('-date')[0].date
+                    last_game_date = date1 if date1 > date2 else date2
+                    if (timezone.now() - last_game_date).days <= 30:
+                        final_tuples.append(tuple) 
+                player_elo_tuples = final_tuples
         else:
             print form.errors
     else:
         form = RankingsSimulationForm()
-    return render(request, 'bump/rankings_sim.html', {'form': form})
+    return render(request, 'bump/rankings_sim.html', {'form': form, 'player_elo_tuples':player_elo_tuples})
 def register(request):
     registered = False
     if request.method == 'POST':

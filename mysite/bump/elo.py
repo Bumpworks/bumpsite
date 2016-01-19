@@ -47,12 +47,13 @@ def eloDict(elo_dict, ranked_dict, games):
         delta = (1-expected_win_for_winner)
         elo_dict[game.winner] += delta * kFactor(winner_elo)
         elo_dict[game.loser] -= delta * kFactor(loser_elo)
-def eloRecords(games):
+def eloRecords(elo_games,record_games):
     ranked_dict, elo_dict = getDicts()
-    rankedDict(ranked_dict, games)
-    eloDict(elo_dict,ranked_dict,games)
+    rankedDict(ranked_dict, record_games)
+    eloDict(elo_dict,ranked_dict,elo_games)
     return elo_dict, ranked_dict
 if __name__ == '__main__':
-    elo_dict, ranked_dict = eloRecords(getGames())
+    games = getGames()
+    elo_dict, ranked_dict = eloRecords(games,games)
     saveRecords(ranked_dict)
     saveElo(elo_dict)

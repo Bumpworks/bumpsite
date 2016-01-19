@@ -3,6 +3,8 @@ from .models import Player, Game
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib.auth.models import User
+from datetime import datetime, timedelta, date
+
 
 class PlayerForm(forms.ModelForm):
     class Meta:
@@ -37,10 +39,15 @@ class GameEditForm(forms.ModelForm):
         return cd
         
 class RankingsSimulationForm(forms.Form):
-    start_date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=True)
-    end_date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=True)
-    
-        
+    start_date = forms.SplitDateTimeField(input_time_formats=['%I:%M%p'], input_date_formats=['%m/%d/%y'],required=False,widget=forms.SplitDateTimeWidget(date_format='%m/%d/%y',time_format='%I:%M%p'),initial=datetime(2014, 8, 24, 0, 0))
+    end_date = forms.SplitDateTimeField(input_time_formats=['%I:%M%p'], input_date_formats=['%m/%d/%y'],required=False,widget=forms.SplitDateTimeWidget(date_format='%m/%d/%y',time_format='%I:%M%p'),initial=datetime(2016, 12, 31, 17, 0))
+    brunswick_table = forms.BooleanField(initial=True,required=False)
+    will_table = forms.BooleanField(initial=True,required=False)
+    kaighn_table = forms.BooleanField(initial=True,required=False)
+    adil_table = forms.BooleanField(initial=True,required=False)
+    loop_table = forms.BooleanField(initial=True,required=False)
+    rectangle_table = forms.BooleanField(required=False)
+    active_players_only = forms.BooleanField(required=False)
 class GameSubmissionForm(forms.Form):
     date = forms.DateTimeField(widget=forms.SplitDateTimeWidget, required=False)
     table = forms.ChoiceField(choices=Game.table_choices_tuples)
