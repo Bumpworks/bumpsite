@@ -156,7 +156,7 @@ def rankings_sim(request):
                 start = '2000-01-01'
             if end == None:
                 end = '2199-01-01'
-            day = timezone.now()
+            day = timezone.localtime(timezone.now())
             last_friday = day - timedelta(days=day.weekday()) + timedelta(days=4, weeks=-1)
             last_friday_at_five = last_friday.replace(hour=17, minute=0)
             if end > last_friday_at_five:
