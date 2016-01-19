@@ -1,0 +1,17 @@
+{% extends 'bump/base.html' %}
+{% block content %}
+    {% if form %}
+    <form id="rankings_form" method="post" action="/rankings-sim/">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="submit" value="Run" />
+    </form>
+    {% endif %}
+    {% if player_elo_tuples %}
+    <ol>
+    {% for tuple in player_elo_tuples %}
+        <li>{{tuple.0}}: {{tuple.1}} ({{tuple.2}}-{{tuple.3}})</li>
+    {% endfor %}
+    </ol>
+    {% endif %}
+{% endblock %}
