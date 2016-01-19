@@ -156,6 +156,11 @@ def rankings_sim(request):
                 start = '2000-01-01'
             if end == None:
                 end = '2199-01-01'
+            day = timezone.now()
+            last_friday = day - timedelta(days=day.weekday()) + timedelta(days=4, weeks=-1)
+            last_friday_at_five = last_friday.replace(hour=17, minute=0)
+            if end > last_friday_at_five:
+                end = last_friday_at_five
             table_booleans = [cd.get('brunswick_table'),cd.get('will_table'),cd.get('kaighn_table'),cd.get('adil_table'),cd.get('loop_table'),cd.get('rectangle_table')]
             active_players_only = cd.get('active_players_only')
             chosen_tables = [x for i,(x,y) in enumerate(Game.table_choices_tuples) if table_booleans[i]]
