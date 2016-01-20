@@ -256,15 +256,22 @@ def player_profile(request, player_identifier):
     user = player.user
     ranked_players = [p for p in Player.objects.all() if p.ranked()]
     def div(a,b):
+        a = float(a)
         if b==0:
             return 'NaN'
         else:
             return a/b
-    def get_finisher_stat(finisher,player,ranked_opponents=False):
-        if ranked_opponents:
-            return Game.objects.filter(finisher=finisher,winner=player,loser__in=ranked_players).count()
+    def get_finisher_stat(finisher,player,ranked_opponents=False,lose=False):
+        if lose:
+            if ranked_opponents:
+                return Game.objects.filter(finisher=finisher,loser=player,winner__in=ranked_players).count()
+            else:
+                return Game.objects.filter(finisher=finisher,loser=player).count()
         else:
-            return Game.objects.filter(finisher=finisher,winner=player).count()
+            if ranked_opponents:
+                return Game.objects.filter(finisher=finisher,winner=player,loser__in=ranked_players).count()
+            else:
+                return Game.objects.filter(finisher=finisher,winner=player).count()
     def get_stats(games,player):
         whr = games.filter(advantage='hr',winner__in=player).count()
         wbr = games.filter(advantage='br',winner__in=player).count()
@@ -279,9 +286,9 @@ def player_profile(request, player_identifier):
         total_wins = whr+wbr+whw+wbw
         total_losses = lhr+lbr+lhw+lbw
         total_games = total_wins + total_losses
-        win_percentages = [div(float(n),total_wins)*100 if total_wins!=0 else 'NaN' for n in win_totals]
-        lose_percentages = [div(float(n),total_losses)*100 if total_losses!=0 else 'NaN' for n in lose_totals]
-        player_stats = [div(float(whr+whw+lbr+lbw),total_games),div(float(whr+lbw),(whr+wbr+lhw+lbw)),div(float(whw+lbr),(whw+lbr+wbw+lhr)),div(float(whr),(whr+lbw)),div(float(whw),(whw+lbr)),div(float(wbr),(wbr+lhw)),div(float(wbw),(wbw+lhr))]
+        win_percentages = [div(n,total_wins)*100 if total_wins!=0 else 'NaN' for n in win_totals]
+        lose_percentages = [div(n,total_losses)*100 if total_losses!=0 else 'NaN' for n in lose_totals]
+        player_stats = [div(whr+whw+lbr+lbw,total_games),div(whr+lbw,(whr+wbr+lhw+lbw)),div(whw+lbr,(whw+lbr+wbw+lhr)),div(whr,(whr+lbw)),div(whw,(whw+lbr)),div(wbr,(wbr+lhw)),div(wbw,(wbw+lhr))]
         player_stats = [n*100 if n!='NaN' else n for n in player_stats]
         return win_totals,lose_totals,win_percentages,lose_percentages,player_stats
     player_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).exclude(advantage='')
@@ -289,11 +296,23 @@ def player_profile(request, player_identifier):
     rwt,rlt,rwp,rlp,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players),[player])
     _,_,_,_,average_stats = get_stats(Game.objects.exclude(advantage=''),Player.objects.all())
     finisher_stats = [(finisher_title,get_finisher_stat(finisher,player)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='']
-    rfinisher_stats = [(finisher_title,get_finisher_stat(finisher,player,True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='']
+    rfinisher_stats = [(finisher_title,get_finisher_stat(finisher,player,ranked_opponents=True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='']
+    lose_finisher_stats = [(finisher_title,get_finisher_stat(finisher,player,lose=True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='']
+    rlose_finisher_stats = [(finisher_title,get_finisher_stat(finisher,player,lose=True,ranked_opponents=True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='']
+    games_after_site_start = Game.objects.filter(date__gte=datetime(month=1,day=1,year=2016))
+    print games_after_site_start.count()
+    player_won_games_after_site_start = games_after_site_start.filter(winner=player)
+    finisher_percentages = [div(count,player_won_games_after_site_start.count())*100 for _,count in finisher_stats]
+    rfinisher_percentages = [div(count,player_won_games_after_site_start.count())*100 for _,count in rfinisher_stats]
+    total_league_finisher = [games_after_site_start.filter(finisher=fin).count() for fin in Game.finisher_choices if fin!='']
+    percentage_league_finisher = [div(n,games_after_site_start.count())*100 for n in total_league_finisher]
     context = {'player_user':user,'player' : player,'recent_games':recent_games,
     'win_totals':wt,'lose_totals':lt,'win_percentages':wp,'lose_percentages':lp,'player_stats':ps,
     'rwin_totals':rwt,'rlose_totals':rlt,'rwin_percentages':rwp,'rlose_percentages':rlp,'rplayer_stats':rps,
-    'average_stats':average_stats, 'finisher_stats':finisher_stats,'rfinisher_stats':rfinisher_stats}
+    'average_stats':average_stats, 'finisher_stats':finisher_stats,'rfinisher_stats':rfinisher_stats,
+    'lose_finisher_stats':lose_finisher_stats,'rlose_finisher_stats':rlose_finisher_stats,
+    'finisher_percentages':finisher_percentages,'rfinisher_percentages':rfinisher_percentages,
+    'total_league_finisher':total_league_finisher,'percentage_league_finisher':percentage_league_finisher}
     return render(request, 'bump/profile.html', context)
   
 def player_info(request):
