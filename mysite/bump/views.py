@@ -254,7 +254,37 @@ def player_profile(request, player_identifier):
     player = Player.objects.get(identifier__iexact=player_identifier)
     recent_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).order_by('-date')[:20]
     user = player.user
-    return render(request, 'bump/profile.html', {'player_user':user,'player' : player,'recent_games':recent_games})
+    def div(a,b):
+        if b==0:
+            return 'NaN'
+        else:
+            return a/b
+    def get_stats(games):
+        whr = games.filter(advantage='hr',winner=player).count()
+        wbr = games.filter(advantage='br',winner=player).count()
+        whw = games.filter(advantage='hw',winner=player).count()
+        wbw = games.filter(advantage='bw',winner=player).count()
+        lhr = games.filter(advantage='hr',loser=player).count()
+        lbr = games.filter(advantage='br',loser=player).count()
+        lhw = games.filter(advantage='hw',loser=player).count()
+        lbw = games.filter(advantage='bw',loser=player).count()
+        win_totals = [whr,wbr,whw,wbw]
+        lose_totals = [lhr,lbr,lhw,lbw]
+        total_wins = whr+wbr+whw+wbw
+        total_losses = lhr+lbr+lhw+lbw
+        total_games = total_wins + total_losses
+        win_percentages = [div(float(n),total_wins) for n in win_totals]
+        lose_percentages = [div(float(n),total_losses) for n in lose_totals]
+        player_stats = [div(float(whr+whw+lbr+lbw),total_games),div(float(whr+lbw),(whr+wbr+lhw+lbw)),div(float(whw+lbr),(whw+lbr+wbw+lhr)),div(float(whr),(whr+lbw)),div(float(whw),(whw+lbr))]
+        return win_totals,lose_totals,win_percentages,lose_percentages,player_stats
+    player_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).exclude(advantage='')
+    wt,lt,wp,lp,ps = get_stats(player_games)
+    ranked_players = [p for p in Player.objects.all() if p.ranked()]
+    rwt,rlt,rwp,rlp,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players))
+    context = {'player_user':user,'player' : player,'recent_games':recent_games,
+    'win_totals':wt,'lose_totals':lt,'win_percentages':wp,'lose_percentages':lp,'player_stats':ps,
+    'rwin_totals':rwt,'rlose_totals':rlt,'rwin_percentages':rwp,'rlose_percentages':rlp,'rplayer_stats':rps}
+    return render(request, 'bump/profile.html', context)
   
 def player_info(request):
     return render(request, 'bump/players.html', {'players' : Player.objects.order_by('first_name')})
