@@ -15,39 +15,22 @@
                 <tr>
                 <td>All Opponents</td>
                 {% for finisher_tuple in finisher_stats %}
-                <td>{{finisher_tuple.1}}</td>
-                {% endfor %}
-                </tr>
-                <tr>
-                <td>Percentages</td>
-                {% for per in finisher_percentages %}
-                <td>{{per|floatformat:1}}</td>
+                <td>{{finisher_tuple.1}} ({{finisher_tuple.2|floatformat:1}}%)</td>
                 {% endfor %}
                 </tr>
                 <tr>
                 <td>Ranked Opponents</td>
                 {% for rfinisher_tuple in rfinisher_stats %}
-                <td>{{rfinisher_tuple.1}}</td>
+                <td>{{rfinisher_tuple.1}} ({{rfinisher_tuple.2|floatformat:1}})</td>
                 {% endfor %}
                 </tr>
                 <tr>
-                <td>Percentages</td>
-                {% for per in rfinisher_percentages %}
-                <td>{{per|floatformat:1}}</td>
-                {% endfor %}
-                </tr>
                 <tr>
                 <td>Total League</td>
-                {% for count in total_league_finisher %}
-                <td>{{count}}</td>
+                {% for count,per in league_finisher %}
+                <td>{{count}} ({{per|floatformat:1}})</td>
                 {% endfor %}
-                </tr>                
-                <tr>
-                <td>Average League %</td>
-                {% for per in percentage_league_finisher %}
-                <td>{{per|floatformat:1}}</td>
-                {% endfor %}
-                </tr>               
+                </tr>   
             </tbody>
         </table>
         <h1>Losing Finishers</h1>
@@ -59,13 +42,13 @@
                 <tr>
                 <td>All Opponents</td>
                 {% for finisher_tuple in lose_finisher_stats %}
-                <td>{{finisher_tuple.1}}</td>
+                <td>{{finisher_tuple.1}} ({{finisher_tuple.2|floatformat:1}}%)</td>
                 {% endfor %}
                 </tr>
                 <tr>
                 <td>Ranked Opponents</td>
                 {% for rfinisher_tuple in rlose_finisher_stats %}
-                <td>{{rfinisher_tuple.1}}</td>
+                <td>{{rfinisher_tuple.1}} ({{rfinisher_tuple.2|floatformat:1}}%)</td>
                 {% endfor %}
                 </tr>
                 <tr>
