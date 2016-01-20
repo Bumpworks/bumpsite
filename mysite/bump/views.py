@@ -299,7 +299,7 @@ def player_profile(request, player_identifier):
     player_wins = games_after_site_start.filter(winner=player).count()
     player_losses = games_after_site_start.filter(loser=player).count()
     player_games_count = player_wins+player_losses
-    finishers = [(fin,title) for fin,title in Game.finisher_choices_tuples if fin!='' and fin!='jfg']
+    finishers = [fin for fin,title in Game.finisher_choices_tuples if fin!='']
     finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player)) for finisher,finisher_title in finishers)]
     rfinisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,ranked_opponents=True)) for finisher,finisher_title in finishers)]
     lose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True)) for finisher,finisher_title in finishers)]
