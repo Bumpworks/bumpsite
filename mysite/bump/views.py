@@ -260,7 +260,7 @@ def player_profile(request, player_identifier):
         else:
             return a/b
     def get_finisher_stat(finisher,player):
-        return Game.objects.filter(finisher=finisher,player=player).count()
+        return Game.objects.filter(finisher=finisher,winner=player).count()
     def get_stats(games,player):
         whr = games.filter(advantage='hr',winner__in=player).count()
         wbr = games.filter(advantage='br',winner__in=player).count()
