@@ -294,7 +294,7 @@ def player_profile(request, player_identifier):
     player_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).exclude(advantage='')
     wt,lt,ps = get_stats(player_games,[player])
     rwt,rlt,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players),[player])
-    _,_,average_stats = get_stats(Game.objects.exclude(advantage=''),Player.objects.all())
+    awt,alt,average_stats = get_stats(Game.objects.exclude(advantage=''),Player.objects.all())
     games_after_site_start = Game.objects.filter(date__gte=datetime(month=12,day=9,year=2015))
     player_wins = games_after_site_start.filter(winner=player).count()
     player_losses = games_after_site_start.filter(loser=player).count()
@@ -307,6 +307,7 @@ def player_profile(request, player_identifier):
     context = {'player_user':user,'player' : player,'recent_games':recent_games,
     'win_tuples':wt,'lose_tuples':lt,'player_stats':ps,
     'rwin_tuples':rwt,'rlose_tuples':rlt,'rplayer_stats':rps,
+    'average_win_tuples':awt,'average_lose_tuples':alt,
     'average_stats':average_stats, 'finisher_stats':finisher_stats,'rfinisher_stats':rfinisher_stats,
     'lose_finisher_stats':lose_finisher_stats,'rlose_finisher_stats':rlose_finisher_stats,
     'league_finisher':league_finisher}

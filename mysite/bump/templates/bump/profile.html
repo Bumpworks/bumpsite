@@ -72,6 +72,12 @@
                 <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
                 {% endfor %}
                 </tr>
+                <tr>
+                <td>League</td>
+                {% for tuple in average_lose_tuples %}
+                <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
+                {% endfor %}
+                </tr>
             </tbody>
         </table>
         <h1>Losses</h1>
@@ -92,6 +98,12 @@
                 <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
                 {% endfor %}
                 </tr>
+                <tr>
+                <td>League</td>
+                {% for tuple in rwin_tuples %}
+                <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
+                {% endfor %}
+                </tr>                
             </tbody>
         </table>
         <h1>Player Stats</h1>
