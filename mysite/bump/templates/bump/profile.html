@@ -21,14 +21,14 @@
                 <tr>
                 <td>Ranked Opponents</td>
                 {% for rfinisher_tuple in rfinisher_stats %}
-                <td>{{rfinisher_tuple.1}} ({{rfinisher_tuple.2|floatformat:1}})</td>
+                <td>{{rfinisher_tuple.1}} ({{rfinisher_tuple.2|floatformat:1}}%)</td>
                 {% endfor %}
                 </tr>
                 <tr>
                 <tr>
                 <td>Total League</td>
                 {% for count,per in league_finisher %}
-                <td>{{count}} ({{per|floatformat:1}})</td>
+                <td>{{count}} ({{per|floatformat:1}}%)</td>
                 {% endfor %}
                 </tr>   
             </tbody>
@@ -60,29 +60,18 @@
                 <tr><td></td><td>Hold Red</td><td>Hold White</td><td>Break Red</td><td>Break White</td></tr>
             </thead>
             <tbody>
-                <tr><td>All Opponents</td>
-                <td>{{win_totals.0}}</td>
-                <td>{{win_totals.2}}</td>
-                <td>{{win_totals.1}}</td>
-                <td>{{win_totals.3}}</td></tr>
                 <tr>
-                <td>Percentages</td>
-                <td>{{win_percentages.0|floatformat:1}}</td>
-                <td>{{win_percentages.2|floatformat:1}}</td>
-                <td>{{win_percentages.1|floatformat:1}}</td>
-                <td>{{win_percentages.3|floatformat:1}}</td></tr>
+                <td>All Opponents</td>
+                {% for tuple in win_tuples %}
+                <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
+                {% endfor %}
+                </tr>
                 <tr>
                 <td>Ranked Opponents</td>
-                <td>{{rwin_totals.0}}</td>
-                <td>{{rwin_totals.2}}</td>
-                <td>{{rwin_totals.1}}</td>
-                <td>{{rwin_totals.3}}</td></tr>
-                <tr>
-                <td>Percentages</td>
-                <td>{{rwin_percentages.0|floatformat:1}}</td>
-                <td>{{rwin_percentages.2|floatformat:1}}</td>
-                <td>{{rwin_percentages.1|floatformat:1}}</td>
-                <td>{{rwin_percentages.3|floatformat:1}}</td></tr>
+                {% for tuple in rwin_tuples %}
+                <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
+                {% endfor %}
+                </tr>
             </tbody>
         </table>
         <h1>Losses</h1>
@@ -93,69 +82,41 @@
             <tbody>
                 <tr>
                 <td>All Opponents</td>
-                <td>{{lose_totals.0}}</td>
-                <td>{{lose_totals.2}}</td>
-                <td>{{lose_totals.1}}</td>
-                <td>{{lose_totals.3}}</td>
-                </tr>
-                <tr>
-                <td>Percentages</td>
-                <td>{{lose_percentages.0|floatformat:1}}</td>
-                <td>{{lose_percentages.2|floatformat:1}}</td>
-                <td>{{lose_percentages.1|floatformat:1}}</td>
-                <td>{{lose_percentages.3|floatformat:1}}</td>
+                {% for tuple in lose_tuples %}
+                <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
+                {% endfor %}
                 </tr>
                 <tr>
                 <td>Ranked Opponents</td>
-                <td>{{rlose_totals.0}}</td>
-                <td>{{rlose_totals.2}}</td>
-                <td>{{rlose_totals.1}}</td>
-                <td>{{rlose_totals.3}}</td>
-                </tr>
-                <tr>
-                <td>Percentages</td>
-                <td>{{rlose_percentages.0|floatformat:1}}</td>
-                <td>{{rlose_percentages.2|floatformat:1}}</td>
-                <td>{{rlose_percentages.1|floatformat:1}}</td>
-                <td>{{rlose_percentages.3|floatformat:1}}</td>
+                {% for tuple in rlose_tuples %}
+                <td>{{tuple.0}} ({{tuple.1|floatformat:1}}%)</td>
+                {% endfor %}
                 </tr>
             </tbody>
         </table>
         <h1>Player Stats</h1>
         <table class="table table-striped table-condensed table-hover">
             <thead>
-                <tr><td></td><td>First Ball %</td><td>Red First Ball %</td><td>White First Ball %</td><td>Red Hold %</td><td>White Hold %</td><td>Red Break %</td><td>White Break %</td></tr>
+                <tr><td></td><td>Red Win %</td><td>White Win %<td>First Ball %</td><td>Red First Ball %</td><td>White First Ball %</td><td>Red Hold Win %</td><td>White Hold Win %</td><td>Red Break %</td><td>White Break %</td></tr>
             </thead>
             <tbody>
                 <tr>
                 <td>All Opponents</td>
-                <td>{{player_stats.0|floatformat:1}}</td>
-                <td>{{player_stats.1|floatformat:1}}</td>
-                <td>{{player_stats.2|floatformat:1}}</td>
-                <td>{{player_stats.3|floatformat:1}}</td>
-                <td>{{player_stats.4|floatformat:1}}</td>
-                <td>{{player_stats.5|floatformat:1}}</td>
-                <td>{{player_stats.6|floatformat:1}}</td>
+                {% for per in player_stats %}
+                <td>{{per|floatformat}}%</td>
+                {% endfor %}
                 </tr>
                 <tr>
                 <td>Ranked Opponents</td>
-                <td>{{rplayer_stats.0|floatformat:1}}</td>
-                <td>{{rplayer_stats.1|floatformat:1}}</td>
-                <td>{{rplayer_stats.2|floatformat:1}}</td>
-                <td>{{rplayer_stats.3|floatformat:1}}</td>
-                <td>{{rplayer_stats.4|floatformat:1}}</td>
-                <td>{{rplayer_stats.5|floatformat:1}}</td>
-                <td>{{rplayer_stats.6|floatformat:1}}</td>
+                {% for per in rplayer_stats %}
+                <td>{{per|floatformat}}%</td>
+                {% endfor %}
                 </tr>
                 <tr>
                 <td>League Average</td>
-                <td>{{average_stats.0|floatformat:1}}</td>
-                <td>{{average_stats.1|floatformat:1}}</td>
-                <td>{{average_stats.2|floatformat:1}}</td>
-                <td>{{average_stats.3|floatformat:1}}</td>
-                <td>{{average_stats.4|floatformat:1}}</td>
-                <td>{{average_stats.5|floatformat:1}}</td>
-                <td>{{average_stats.6|floatformat:1}}</td>                
+                {% for per in average_stats %}
+                <td>{{per|floatformat}}%</td>
+                {% endfor %}               
                 </tr>
             </tbody>
         </table>

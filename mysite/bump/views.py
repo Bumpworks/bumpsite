@@ -281,21 +281,21 @@ def player_profile(request, player_identifier):
         lbr = games.filter(advantage='br',loser__in=player).count()
         lhw = games.filter(advantage='hw',loser__in=player).count()
         lbw = games.filter(advantage='bw',loser__in=player).count()
-        win_totals = [whr,wbr,whw,wbw]
-        lose_totals = [lhr,lbr,lhw,lbw]
+        win_totals = [whr,whw,wbr,wbw]
+        lose_totals = [lhr,lhw,lbr,lbw]
         total_wins = whr+wbr+whw+wbw
         total_losses = lhr+lbr+lhw+lbw
         total_games = total_wins + total_losses
-        win_percentages = [div(n,total_wins)*100 if total_wins!=0 else 'NaN' for n in win_totals]
-        lose_percentages = [div(n,total_losses)*100 if total_losses!=0 else 'NaN' for n in lose_totals]
-        player_stats = [div(whr+whw+lbr+lbw,total_games),div(whr+lbw,(whr+wbr+lhw+lbw)),div(whw+lbr,(whw+lbr+wbw+lhr)),div(whr,(whr+lbw)),div(whw,(whw+lbr)),div(wbr,(wbr+lhw)),div(wbw,(wbw+lhr))]
+        win_tuples = [(n,div(n,total_wins)*100) if total_wins!=0 else 'NaN' for n in win_totals]
+        lose_tuples = [(n,div(n,total_losses)*100) if total_losses!=0 else 'NaN' for n in lose_totals]
+        player_stats = [div(whr+wbr,whr+wbr+lbw+lhw),div(whw+wbw,whw+wbw+lhr+lbr),div(whr+whw+lbr+lbw,total_games),div(whr+lbw,(whr+wbr+lhw+lbw)),div(whw+lbr,(whw+lbr+wbw+lhr)),div(whr,(whr+lbw)),div(whw,(whw+lbr)),div(wbr,(wbr+lhw)),div(wbw,(wbw+lhr))]
         player_stats = [n*100 if n!='NaN' else n for n in player_stats]
-        return win_totals,lose_totals,win_percentages,lose_percentages,player_stats
+        return win_tuples,lose_tuples,player_stats
     player_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).exclude(advantage='')
-    wt,lt,wp,lp,ps = get_stats(player_games,[player])
-    rwt,rlt,rwp,rlp,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players),[player])
-    _,_,_,_,average_stats = get_stats(Game.objects.exclude(advantage=''),Player.objects.all())
-    games_after_site_start = Game.objects.filter(date__gte=datetime(month=1,day=1,year=2016))
+    wt,lt,ps = get_stats(player_games,[player])
+    rwt,rlt,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players),[player])
+    _,_,average_stats = get_stats(Game.objects.exclude(advantage=''),Player.objects.all())
+    games_after_site_start = Game.objects.filter(date__gte=datetime(month=12,day=9,year=2015))
     player_wins = games_after_site_start.filter(winner=player).count()
     player_losses = games_after_site_start.filter(loser=player).count()
     player_games_count = player_wins+player_losses
@@ -305,8 +305,8 @@ def player_profile(request, player_identifier):
     rlose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True,ranked_opponents=True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='')]
     league_finisher = [(count,div(count,games_after_site_start.count())*100) for count in (games_after_site_start.filter(finisher=fin).count() for fin in Game.finisher_choices if fin!='')]
     context = {'player_user':user,'player' : player,'recent_games':recent_games,
-    'win_totals':wt,'lose_totals':lt,'win_percentages':wp,'lose_percentages':lp,'player_stats':ps,
-    'rwin_totals':rwt,'rlose_totals':rlt,'rwin_percentages':rwp,'rlose_percentages':rlp,'rplayer_stats':rps,
+    'win_tuples':wt,'lose_tuples':lt,'player_stats':ps,
+    'rwin_tuples':rwt,'rlose_tuples':rlt,'rplayer_stats':rps,
     'average_stats':average_stats, 'finisher_stats':finisher_stats,'rfinisher_stats':rfinisher_stats,
     'lose_finisher_stats':lose_finisher_stats,'rlose_finisher_stats':rlose_finisher_stats,
     'league_finisher':league_finisher}
