@@ -47,10 +47,10 @@ class Game(models.Model):
     table = models.CharField(choices=table_choices_tuples, max_length=2,default='ty')
     finisher_choices_tuples = (
         ('', 'Normal'),
-        ('bfg', 'Bump for Glory'),
-        ('jfg', 'Jump for Glory'),
-        ('nfg', 'New Age for Glory'),
         ('sweep', 'Sweep'),
+        ('bfg', 'Bump for Glory'),
+        ('nfg', 'New Age for Glory'),
+        ('jfg', 'Jump for Glory'),
         ('death', 'Death Ball'),
         )
     finisher = models.CharField(choices=finisher_choices_tuples, max_length=5,default='',blank=True)

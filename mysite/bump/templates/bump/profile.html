@@ -6,7 +6,19 @@
         Record: {{ player.wins }}-{{ player.losses }} <br/>
         Elo: {{ player.elo }}<br/>
         First Bumped: {{ player.start_date }}<br/>
-        
+        <table class="table table-striped table-condensed table-hover">
+            <thead>
+                <tr>{% for finisher_tuple in finisher_stats %}<td>{{finisher_tuple.0}}{% endfor %}</tr>
+            </thead>
+            <tbody>
+                <tr>
+                {% for finisher_tuple in finisher_stats %}
+                <td>{{finisher_tuple.1}}</td>
+                {% endfor %}
+                </tr>
+                <tr>
+            </tbody>
+        </table>
         <table class="table table-striped table-condensed table-hover">
             <thead>
                 <tr><td></td><td>Hold Red</td><td>Hold White</td><td>Break Red</td><td>Break White</td></tr>
