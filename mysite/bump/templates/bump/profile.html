@@ -52,6 +52,11 @@
                 {% endfor %}
                 </tr>
                 <tr>
+                <td>Total League</td>
+                {% for count,per in league_finisher %}
+                <td>{{count}} ({{per|floatformat:1}}%)</td>
+                {% endfor %}
+                </tr> 
             </tbody>
         </table>
         <h1>Wins</h1>
