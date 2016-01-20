@@ -8,12 +8,19 @@
         First Bumped: {{ player.start_date }}<br/>
         <table class="table table-striped table-condensed table-hover">
             <thead>
-                <tr>{% for finisher_tuple in finisher_stats %}<td>{{finisher_tuple.0}}{% endfor %}</tr>
+                <tr><td></td>{% for finisher_tuple in finisher_stats %}<td>{{finisher_tuple.0}}</td>{% endfor %}</tr>
             </thead>
             <tbody>
                 <tr>
+                <td>All Opponents</td>
                 {% for finisher_tuple in finisher_stats %}
                 <td>{{finisher_tuple.1}}</td>
+                {% endfor %}
+                </tr>
+                <tr>
+                <td>Ranked Opponents</td>
+                {% for rfinisher_tuple in rfinisher_stats %}
+                <td>{{rfinisher_tuple.1}}</td>
                 {% endfor %}
                 </tr>
                 <tr>
