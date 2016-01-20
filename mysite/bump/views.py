@@ -299,11 +299,12 @@ def player_profile(request, player_identifier):
     player_wins = games_after_site_start.filter(winner=player).count()
     player_losses = games_after_site_start.filter(loser=player).count()
     player_games_count = player_wins+player_losses
-    finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='')]
-    rfinisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,ranked_opponents=True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='')]
-    lose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='')]
-    rlose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True,ranked_opponents=True)) for finisher,finisher_title in Game.finisher_choices_tuples if finisher!='')]
-    league_finisher = [(count,div(count,games_after_site_start.count())*100) for count in (games_after_site_start.filter(finisher=fin).count() for fin in Game.finisher_choices if fin!='')]
+    finishers = [(fin,title) for fin,title in Game.finisher_choices_tuples if fin!='' and fin!='jfg']
+    finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player)) for finisher,finisher_title in finishers)]
+    rfinisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,ranked_opponents=True)) for finisher,finisher_title in finishers)]
+    lose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True)) for finisher,finisher_title in finishers)]
+    rlose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True,ranked_opponents=True)) for finisher,finisher_title in finishers)]
+    league_finisher = [(count,div(count,games_after_site_start.count())*100) for count in (games_after_site_start.filter(finisher=fin).count() for fin in finishers)]
     context = {'player_user':user,'player' : player,'recent_games':recent_games,
     'win_tuples':wt,'lose_tuples':lt,'player_stats':ps,
     'rwin_tuples':rwt,'rlose_tuples':rlt,'rplayer_stats':rps,
