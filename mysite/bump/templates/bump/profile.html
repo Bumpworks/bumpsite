@@ -19,10 +19,10 @@
                 <td>{{win_totals.3}}</td></tr>
                 <tr>
                 <td>Percentages</td>
-                <td>{{win_percentages.0}}</td>
-                <td>{{win_percentages.2}}</td>
-                <td>{{win_percentages.1}}</td>
-                <td>{{win_percentages.3}}</td></tr>
+                <td>{{win_percentages.0|floatformat:1}}</td>
+                <td>{{win_percentages.2|floatformat:1}}</td>
+                <td>{{win_percentages.1|floatformat:1}}</td>
+                <td>{{win_percentages.3|floatformat:1}}</td></tr>
                 <tr>
                 <td>Ranked Opponents</td>
                 <td>{{rwin_totals.0}}</td>
@@ -31,10 +31,10 @@
                 <td>{{rwin_totals.3}}</td></tr>
                 <tr>
                 <td>Percentages</td>
-                <td>{{rwin_percentages.0}}</td>
-                <td>{{rwin_percentages.2}}</td>
-                <td>{{rwin_percentages.1}}</td>
-                <td>{{rwin_percentages.3}}</td></tr>
+                <td>{{rwin_percentages.0|floatformat:1}}</td>
+                <td>{{rwin_percentages.2|floatformat:1}}</td>
+                <td>{{rwin_percentages.1|floatformat:1}}</td>
+                <td>{{rwin_percentages.3|floatformat:1}}</td></tr>
             </tbody>
         </table>
         <table class="table table-striped table-condensed table-hover">
@@ -51,10 +51,10 @@
                 </tr>
                 <tr>
                 <td>Percentages</td>
-                <td>{{lose_percentages.0}}</td>
-                <td>{{lose_percentages.2}}</td>
-                <td>{{lose_percentages.1}}</td>
-                <td>{{lose_percentages.3}}</td>
+                <td>{{lose_percentages.0|floatformat:1}}</td>
+                <td>{{lose_percentages.2|floatformat:1}}</td>
+                <td>{{lose_percentages.1|floatformat:1}}</td>
+                <td>{{lose_percentages.3|floatformat:1}}</td>
                 </tr>
                 <tr>
                 <td>Ranked Opponents</td>
@@ -65,41 +65,47 @@
                 </tr>
                 <tr>
                 <td>Percentages</td>
-                <td>{{rlose_percentages.0}}</td>
-                <td>{{rlose_percentages.2}}</td>
-                <td>{{rlose_percentages.1}}</td>
-                <td>{{rlose_percentages.3}}</td>
+                <td>{{rlose_percentages.0|floatformat:1}}</td>
+                <td>{{rlose_percentages.2|floatformat:1}}</td>
+                <td>{{rlose_percentages.1|floatformat:1}}</td>
+                <td>{{rlose_percentages.3|floatformat:1}}</td>
                 </tr>
             </tbody>
         </table>
                 <table class="table table-striped table-condensed table-hover">
             <thead>
-                <tr><td></td><td>First Ball %</td><td>Red First Ball %</td><td>White First Ball %</td><td>Red Hold %</td><td>White Hold %</td></tr>
+                <tr><td></td><td>First Ball %</td><td>Red First Ball %</td><td>White First Ball %</td><td>Red Hold %</td><td>White Hold %</td><td>Red Break %</td><td>White Break %</td></tr>
             </thead>
             <tbody>
                 <tr>
                 <td>All Opponents</td>
-                <td>{{player_stats.0}}</td>
-                <td>{{player_stats.1}}</td>
-                <td>{{player_stats.2}}</td>
-                <td>{{player_stats.3}}</td>
-                <td>{{player_stats.4}}</td>
+                <td>{{player_stats.0|floatformat:1}}</td>
+                <td>{{player_stats.1|floatformat:1}}</td>
+                <td>{{player_stats.2|floatformat:1}}</td>
+                <td>{{player_stats.3|floatformat:1}}</td>
+                <td>{{player_stats.4|floatformat:1}}</td>
+                <td>{{player_stats.5|floatformat:1}}</td>
+                <td>{{player_stats.6|floatformat:1}}</td>
                 </tr>
                 <tr>
                 <td>Ranked Opponents</td>
-                <td>{{rplayer_stats.0}}</td>
-                <td>{{rplayer_stats.1}}</td>
-                <td>{{rplayer_stats.2}}</td>
-                <td>{{rplayer_stats.3}}</td>
-                <td>{{rplayer_stats.4}}</td>
+                <td>{{rplayer_stats.0|floatformat:1}}</td>
+                <td>{{rplayer_stats.1|floatformat:1}}</td>
+                <td>{{rplayer_stats.2|floatformat:1}}</td>
+                <td>{{rplayer_stats.3|floatformat:1}}</td>
+                <td>{{rplayer_stats.4|floatformat:1}}</td>
+                <td>{{rplayer_stats.5|floatformat:1}}</td>
+                <td>{{rplayer_stats.6|floatformat:1}}</td>
                 </tr>
                 <tr>
                 <td>League Average</td>
-                <td>{{average_stats.0}}</td>
-                <td>{{average_stats.1}}</td>
-                <td>{{average_stats.2}}</td>
-                <td>{{average_stats.3}}</td>
-                <td>{{average_stats.4}}</td>
+                <td>{{average_stats.0|floatformat:1}}</td>
+                <td>{{average_stats.1|floatformat:1}}</td>
+                <td>{{average_stats.2|floatformat:1}}</td>
+                <td>{{average_stats.3|floatformat:1}}</td>
+                <td>{{average_stats.4|floatformat:1}}</td>
+                <td>{{average_stats.5|floatformat:1}}</td>
+                <td>{{average_stats.6|floatformat:1}}</td>                
                 </tr>
             </tbody>
         </table>

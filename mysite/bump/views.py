@@ -273,9 +273,10 @@ def player_profile(request, player_identifier):
         total_wins = whr+wbr+whw+wbw
         total_losses = lhr+lbr+lhw+lbw
         total_games = total_wins + total_losses
-        win_percentages = [div(float(n),total_wins) for n in win_totals]
-        lose_percentages = [div(float(n),total_losses) for n in lose_totals]
-        player_stats = [div(float(whr+whw+lbr+lbw),total_games),div(float(whr+lbw),(whr+wbr+lhw+lbw)),div(float(whw+lbr),(whw+lbr+wbw+lhr)),div(float(whr),(whr+lbw)),div(float(whw),(whw+lbr))]
+        win_percentages = [div(float(n),total_wins)*100 if total_wins!=0 else 'NaN' for n in win_totals]
+        lose_percentages = [div(float(n),total_losses)*100 if total_losses!=0 else 'NaN' for n in lose_totals]
+        player_stats = [div(float(whr+whw+lbr+lbw),total_games),div(float(whr+lbw),(whr+wbr+lhw+lbw)),div(float(whw+lbr),(whw+lbr+wbw+lhr)),div(float(whr),(whr+lbw)),div(float(whw),(whw+lbr)),div(float(wbr),(wbr+lhw)),div(float(wbw),(wbw+lhr))]
+        player_stats = [n*100 if n!='NaN' else n for n in player_stats]
         return win_totals,lose_totals,win_percentages,lose_percentages,player_stats
     player_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).exclude(advantage='')
     wt,lt,wp,lp,ps = get_stats(player_games,[player])
