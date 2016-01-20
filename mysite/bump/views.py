@@ -259,15 +259,15 @@ def player_profile(request, player_identifier):
             return 'NaN'
         else:
             return a/b
-    def get_stats(games):
-        whr = games.filter(advantage='hr',winner=player).count()
-        wbr = games.filter(advantage='br',winner=player).count()
-        whw = games.filter(advantage='hw',winner=player).count()
-        wbw = games.filter(advantage='bw',winner=player).count()
-        lhr = games.filter(advantage='hr',loser=player).count()
-        lbr = games.filter(advantage='br',loser=player).count()
-        lhw = games.filter(advantage='hw',loser=player).count()
-        lbw = games.filter(advantage='bw',loser=player).count()
+    def get_stats(games,player):
+        whr = games.filter(advantage='hr',winner__in=player).count()
+        wbr = games.filter(advantage='br',winner__in=player).count()
+        whw = games.filter(advantage='hw',winner__in=player).count()
+        wbw = games.filter(advantage='bw',winner__in=player).count()
+        lhr = games.filter(advantage='hr',loser__in=player).count()
+        lbr = games.filter(advantage='br',loser__in=player).count()
+        lhw = games.filter(advantage='hw',loser__in=player).count()
+        lbw = games.filter(advantage='bw',loser__in=player).count()
         win_totals = [whr,wbr,whw,wbw]
         lose_totals = [lhr,lbr,lhw,lbw]
         total_wins = whr+wbr+whw+wbw
@@ -278,12 +278,14 @@ def player_profile(request, player_identifier):
         player_stats = [div(float(whr+whw+lbr+lbw),total_games),div(float(whr+lbw),(whr+wbr+lhw+lbw)),div(float(whw+lbr),(whw+lbr+wbw+lhr)),div(float(whr),(whr+lbw)),div(float(whw),(whw+lbr))]
         return win_totals,lose_totals,win_percentages,lose_percentages,player_stats
     player_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).exclude(advantage='')
-    wt,lt,wp,lp,ps = get_stats(player_games)
+    wt,lt,wp,lp,ps = get_stats(player_games,[player])
     ranked_players = [p for p in Player.objects.all() if p.ranked()]
-    rwt,rlt,rwp,rlp,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players))
+    rwt,rlt,rwp,rlp,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players),[player])
+    _,_,_,_,average_stats = get_stats(Game.objects.exclude(advantage=''),Player.objects.all())
     context = {'player_user':user,'player' : player,'recent_games':recent_games,
     'win_totals':wt,'lose_totals':lt,'win_percentages':wp,'lose_percentages':lp,'player_stats':ps,
-    'rwin_totals':rwt,'rlose_totals':rlt,'rwin_percentages':rwp,'rlose_percentages':rlp,'rplayer_stats':rps}
+    'rwin_totals':rwt,'rlose_totals':rlt,'rwin_percentages':rwp,'rlose_percentages':rlp,'rplayer_stats':rps,
+    'average_stats':average_stats}
     return render(request, 'bump/profile.html', context)
   
 def player_info(request):
