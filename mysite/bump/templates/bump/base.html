@@ -41,7 +41,7 @@
       <ul class="nav navbar-nav navbar-right">
       {% if user.is_authenticated %}
       <li>Hello, {{ user.username }}!</li>
-      <li><a href="{% url 'bump:profile' user.player %}">My Profile</a></li>
+      <li><a href="{% url 'bump:profile' user.player "blah" %}">My Profile</a></li>
       <li><a href="{% url 'bump:logout' %}">Log out</a></li>
       {% else %}
       <li><a href="{% url 'bump:login' %}">Log in</a></li>

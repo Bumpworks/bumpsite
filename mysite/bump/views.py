@@ -34,8 +34,7 @@ def index(request):
     week_games = month_games.filter(date__gte = (now - timedelta(days = 7)))
     day_games = week_games.filter(date__gte = (now - timedelta(days=1)))
     hour_games = day_games.filter(date__gte = (now - timedelta(hours=1)))
-
-    start_date = timezone.localtime(timezone.now()).date() - timedelta(hours=6)
+    start_date = datetime.combine(timezone.localtime(timezone.now()).date(),datetime.min.time()) + timedelta(hours=6)
     end_date = start_date + timedelta( days=1 ) 
     games_today = Game.objects.filter(date__range=(start_date, end_date))
     def tupleify(playerA, playerB):
@@ -250,9 +249,9 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
     
-def player_profile(request, player_identifier):
-    player = Player.objects.get(identifier__iexact=player_identifier)
-    recent_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).order_by('-date')[:20]
+def player_profile(request, player_identifier, opponent_identifier):
+    player = get_object_or_404(Player,identifier__iexact=player_identifier)
+    recent_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).order_by('-date')
     user = player.user
     ranked_players = [p for p in Player.objects.all() if p.ranked()]
     def div(a,b):
@@ -261,17 +260,17 @@ def player_profile(request, player_identifier):
             return 'NaN'
         else:
             return a/b
-    def get_finisher_stat(finisher,player,ranked_opponents=False,lose=False):
+    def get_finisher_stat(finisher,player,games=Game.objects,ranked_opponents=False,lose=False):
         if lose:
             if ranked_opponents:
-                return Game.objects.filter(finisher=finisher,loser=player,winner__in=ranked_players).count()
+                return games.filter(finisher=finisher,loser=player,winner__in=ranked_players).count()
             else:
-                return Game.objects.filter(finisher=finisher,loser=player).count()
+                return games.filter(finisher=finisher,loser=player).count()
         else:
             if ranked_opponents:
-                return Game.objects.filter(finisher=finisher,winner=player,loser__in=ranked_players).count()
+                return games.filter(finisher=finisher,winner=player,loser__in=ranked_players).count()
             else:
-                return Game.objects.filter(finisher=finisher,winner=player).count()
+                return games.filter(finisher=finisher,winner=player).count()
     def get_stats(games,player):
         whr = games.filter(advantage='hr',winner__in=player).count()
         wbr = games.filter(advantage='br',winner__in=player).count()
@@ -291,27 +290,37 @@ def player_profile(request, player_identifier):
         player_stats = [div(whr+wbr,whr+wbr+lbw+lhw),div(whw+wbw,whw+wbw+lhr+lbr),div(whr+whw+lbr+lbw,total_games),div(whr+lbw,(whr+wbr+lhw+lbw)),div(whw+lbr,(whw+lbr+wbw+lhr)),div(whr,(whr+lbw)),div(whw,(whw+lbr)),div(wbr,(wbr+lhw)),div(wbw,(wbw+lhr))]
         player_stats = [n*100 if n!='NaN' else n for n in player_stats]
         return win_tuples,lose_tuples,player_stats
-    player_games = Game.objects.filter(Q(winner__identifier__iexact = player_identifier) | Q(loser__identifier__iexact=player_identifier)).exclude(advantage='')
+    all_player_games = Game.objects.filter(Q(winner = player) | Q(loser=player))
+    player_games = all_player_games.exclude(advantage='')
+    finisher_player_games = all_player_games
+    if len(opponent_identifier) > 0:
+        opponent = get_object_or_404(Player,identifier__iexact = opponent_identifier)
+        player_games = player_games.filter(Q(winner = opponent)|Q(loser=opponent))
+        recent_games = recent_games.filter(Q(winner = opponent)|Q(loser=opponent))
+        finisher_player_games = all_player_games.filter(Q(winner=opponent)|Q(loser=opponent))
     wt,lt,ps = get_stats(player_games,[player])
     rwt,rlt,rps = get_stats(player_games.filter(winner__in=ranked_players,loser__in=ranked_players),[player])
     awt,alt,average_stats = get_stats(Game.objects.exclude(advantage=''),Player.objects.all())
     games_after_site_start = Game.objects.filter(date__gte=datetime(month=12,day=9,year=2015))
     player_wins = games_after_site_start.filter(winner=player).count()
     player_losses = games_after_site_start.filter(loser=player).count()
+    if len(opponent_identifier) > 0:
+        player_wins = games_after_site_start.filter(winner=player,loser=opponent).count()
+        player_losses = games_after_site_start.filter(loser=player,winner=opponent).count()
     player_games_count = player_wins+player_losses
     finishers = [(fin,title) for fin,title in Game.finisher_choices_tuples if fin!='']
-    finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player)) for finisher,finisher_title in finishers)]
-    rfinisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,ranked_opponents=True)) for finisher,finisher_title in finishers)]
-    lose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True)) for finisher,finisher_title in finishers)]
-    rlose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,lose=True,ranked_opponents=True)) for finisher,finisher_title in finishers)]
+    finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,games=finisher_player_games)) for finisher,finisher_title in finishers)]
+    rfinisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,games=finisher_player_games,ranked_opponents=True)) for finisher,finisher_title in finishers)]
+    lose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,games=finisher_player_games,lose=True)) for finisher,finisher_title in finishers)]
+    rlose_finisher_stats = [(t,count,div(count,player_games_count)*100) for t,count in ((finisher_title,get_finisher_stat(finisher,player,games=finisher_player_games,lose=True,ranked_opponents=True)) for finisher,finisher_title in finishers)]
     league_finisher = [(count,div(count,games_after_site_start.count())*100) for count in (games_after_site_start.filter(finisher=fin).count() for fin,_ in finishers)]
-    context = {'player_user':user,'player' : player,'recent_games':recent_games,
+    context = {'player_user':user,'player' : player,'recent_games':recent_games[:20],
     'win_tuples':wt,'lose_tuples':lt,'player_stats':ps,
     'rwin_tuples':rwt,'rlose_tuples':rlt,'rplayer_stats':rps,
     'average_win_tuples':awt,'average_lose_tuples':alt,
     'average_stats':average_stats, 'finisher_stats':finisher_stats,'rfinisher_stats':rfinisher_stats,
     'lose_finisher_stats':lose_finisher_stats,'rlose_finisher_stats':rlose_finisher_stats,
-    'league_finisher':league_finisher}
+    'league_finisher':league_finisher,'site_record':[player_wins,player_losses]}
     return render(request, 'bump/profile.html', context)
   
 def player_info(request):
