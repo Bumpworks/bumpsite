@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Player, Game
+from .models import Player, Game, Achievement, AchievementRecord
 import math
 from .forms import GameSubmissionForm, UserForm, PlayerForm, GameEditForm, RankingsSimulationForm
 from django.contrib.auth import authenticate, login
@@ -12,7 +12,7 @@ from django.core import serializers
 from django.db.models import Q
 from django.contrib.auth import logout
 from .elo import eloRecords
-
+from .engine import check_achievements
 def api_games(request):
     data = serializers.serialize("json", Game.objects.all())
     return HttpResponse(data, content_type='application/json')
@@ -102,6 +102,8 @@ def submit_game(request):
                 for i in range(num_games):    
                     game = Game(winner=winner,loser=loser,advantage=advantage,finisher=finisher,table=table,date=date,recorder=game_recorder)
                     game.save()
+                    check_achievements(game)
+                    
             form = GameSubmissionForm()
             return HttpResponseRedirect('')
     else:
@@ -313,6 +315,11 @@ def player_profile(request, player_identifier):
     'lose_finisher_stats':lose_finisher_stats,'rlose_finisher_stats':rlose_finisher_stats,
     'league_finisher':league_finisher}
     return render(request, 'bump/profile.html', context)
-  
+def achievements(request):
+    achievements = Achievement.objects.all()
+    achievement_tuples = [(ach,AchievementRecord.objects.filter(achievement=ach).count()) for ach in achievements]
+    context = {'achievement_tuples':achievement_tuples}
+    return render(request, 'bump/achievements.html', context)
+
 def player_info(request):
     return render(request, 'bump/players.html', {'players' : Player.objects.order_by('first_name')})

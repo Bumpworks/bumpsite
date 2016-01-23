@@ -68,3 +68,22 @@ class Game(models.Model):
             table_string = '('+table[0]+')'
         return str(self.winner) +' '+ str(self.loser)+' '+self.advantage+' '+finisher_string+' '+table_string
 
+class Achievement(models.Model):
+    name = models.CharField(unique=True,max_length=75)
+    description = models.TextField()
+    points = models.IntegerField(default=0)
+    callback = models.TextField()
+    category_choices_tuples = (
+        ('sg', 'Single Game Achievement'),
+        ('', 'No Category'),
+        ('mg', 'Multi Game Achievement'),
+    )
+    category = models.CharField(choices=category_choices_tuples, max_length=2, default='')
+    def __unicode__(self):
+        return "Achievement(%s, %s)" % (self.name, self.points)
+
+
+class AchievementRecord(models.Model):
+    player = models.ForeignKey(Player)
+    achievement = models.ForeignKey(Achievement, related_name="achievementrecord")
+    date = models.DateTimeField(auto_now_add=True)

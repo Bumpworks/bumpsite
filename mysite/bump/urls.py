@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^create-player/$', views.create_player, name='create_player'),
     url(r'^recent-submitted/$', views.recent_submitted_games, name='recent_submitted_games'),
     url(r'^edit-game/(?P<game_pk>[\d]+)/$', views.edit_game, name='edit_game'),
+    url(r'^achievements/$', views.achievements, name='achievements'),
     url(r'^api/games$', views.api_games, name='api_games'),
     url(r'^api/games/(?P<player1>[\w]+)/(?P<player2>[\w]+)$', views.api_games_between, name='api_games_between'),
     url(r'^api/games/(?P<player>[\w]+)$', views.api_games_by, name='api_games_by'),

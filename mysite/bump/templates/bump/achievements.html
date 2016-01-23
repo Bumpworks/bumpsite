@@ -1,0 +1,12 @@
+{% extends 'bump/base.html' %}
+{% block content %}    
+    <h4>Achievements</h4>
+    {% if achievement_tuples %}
+    <ul>
+    {% for ach,count in achievement_tuples %}
+        <li>{{ach.name}}: {{ach.description}} ({{ach.points}} points) - {{count}} people have achieved it</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    
+{% endblock %}
