@@ -34,7 +34,7 @@ def index(request):
     week_games = month_games.filter(date__gte = (now - timedelta(days = 7)))
     day_games = week_games.filter(date__gte = (now - timedelta(days=1)))
     hour_games = day_games.filter(date__gte = (now - timedelta(hours=1)))
-    start_date = datetime.combine(timezone.localtime(timezone.now()).date(),datetime.min.time()) + timedelta(hours=6)
+    start_date = datetime.combine(timezone.localtime(timezone.now()-timedelta(hours=6)).date(),datetime.min.time()) + timedelta(hours=6)
     end_date = start_date + timedelta( days=1 ) 
     games_today = Game.objects.filter(date__range=(start_date, end_date))
     def tupleify(playerA, playerB):
