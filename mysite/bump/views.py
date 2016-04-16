@@ -12,6 +12,8 @@ from django.core import serializers
 from django.db.models import Q
 from django.contrib.auth import logout
 from .elo import eloRecords, SgoatCalculator
+import elo
+import operator
 
 def api_games(request):
     data = serializers.serialize("json", Game.objects.all())
@@ -260,8 +262,17 @@ def sgoat(request):
         calculator.eloDict()
         calculator.recordPlace(2)
         calculator.updateDate(tdelta)
-    print calculator.place_history
-    return render(request, 'bump/sgoat.html', {"placeDict": calculator.place_history.items()})    
+    considered_players = [k for k,v in calculator.place_history.items() if v >= 5]
+    records_against = {}
+    for p1 in considered_players:
+        records_against[p1] = []
+        for p2 in considered_players:
+            if p1 == p2:
+                continue
+            wins,loses = elo.recordAgainst(p1,p2)
+            records_against[p1].append((p2,wins,loses))
+    return render(request, 'bump/sgoat.html', {"placeDict": sorted(calculator.place_history.items(), key=operator.itemgetter(1), reverse=True),
+        "records_against" : records_against.items()})    
 
     
 def player_profile(request, player_identifier, opponent_identifier):

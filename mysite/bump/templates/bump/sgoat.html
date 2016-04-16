@@ -6,4 +6,13 @@
     {% for player,place_count in placeDict %}
         <li>{{ player.identifier }}: {{place_count}}</li>
     {% endfor %}
+    <h5>Records Against</h5>
+    {% for player,opponent_tuples in records_against %}
+        <p>{{player.identifier}} Against:</p>
+        <ul>
+        {% for opponent,wins,loses in opponent_tuples  %}
+        <li>{{opponent.identifier}}: ({{wins}}-{{loses}})</li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
 {% endblock %}

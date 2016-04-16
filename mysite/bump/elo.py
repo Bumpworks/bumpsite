@@ -33,7 +33,8 @@ def getDicts():
         elo_dict[player] = 1000
         ranked_dict[player] = [0,0]
     return ranked_dict, elo_dict
-
+def recordAgainst(player1,player2):
+    return len(Game.objects.filter(winner=player1,loser=player2)),len(Game.objects.filter(winner=player2,loser=player1))
 def rankedDict(ranked_dict, games):    
     for game in games:
         ranked_dict[game.winner][0] += 1
