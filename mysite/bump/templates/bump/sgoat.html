@@ -15,4 +15,10 @@
         {% endfor %}
         </ul>
     {% endfor %}
+    <h5>Overall Record + (Non-Tyler Win % on Brunswick)</h5>
+    <ul>
+    {% for player,tup in nontyler_record %}
+        <li>{{ player.identifier }} ({{player.wins}}-{{player.losses}}) | {{tup.0|floatformat:3}} ({{tup.1}}-{{tup.2}})</li>
+    {% endfor %}
+    </ul>
 {% endblock %}

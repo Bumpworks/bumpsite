@@ -271,8 +271,15 @@ def sgoat(request):
                 continue
             wins,loses = elo.recordAgainst(p1,p2)
             records_against[p1].append((p2,wins,loses))
+    brunswick_games = Game.objects.filter(table="ty")
+    nontylergames = Game.objects.exclude(Q(winner__identifier = "Tyler") | Q(loser__identifier="Tyler"))
+    nontyler_record = {}
+    for p1 in considered_players:
+        wins = nontylergames.filter(winner=p1).count()
+        losses = nontylergames.filter(loser=p1).count()
+        nontyler_record[p1] = (float(wins)/(wins+losses),wins,losses)
     return render(request, 'bump/sgoat.html', {"placeDict": sorted(calculator.place_history.items(), key=operator.itemgetter(1), reverse=True),
-        "records_against" : records_against.items()})    
+        "records_against" : records_against.items(), "nontyler_record": nontyler_record.items()})    
 
     
 def player_profile(request, player_identifier, opponent_identifier):
