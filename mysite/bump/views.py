@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.core import serializers
 from django.db.models import Q
 from django.contrib.auth import logout
-from .elo import eloRecords
+from .elo import eloRecords, SgoatCalculator
 
 def api_games(request):
     data = serializers.serialize("json", Game.objects.all())
@@ -248,6 +248,21 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+def sgoat(request):
+    sgoat_weeks_dict = {}
+    ordered_dates = [] 
+    tdelta = timedelta(days=7)
+    start_date = datetime(month=9,day=4,year=2014,hour=17)
+    calculator = SgoatCalculator(start_date,start_date+tdelta) 
+    now = datetime.now()
+    while calculator.future_date < now:
+        calculator.eloDict()
+        calculator.recordPlace(2)
+        calculator.updateDate(tdelta)
+    print calculator.place_history
+    return render(request, 'bump/sgoat.html', {"placeDict": calculator.place_history.items()})    
+
     
 def player_profile(request, player_identifier, opponent_identifier):
     player = get_object_or_404(Player,identifier__iexact=player_identifier)

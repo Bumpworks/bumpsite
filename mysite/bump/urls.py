@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^rankings/$', views.rankings, name = 'rankings'),
     url(r'^rankings-sim/$', views.rankings_sim, name = 'rankings_sim'),
     url(r'^register/$', views.register, name = 'register'),
+    url(r'^SGOAT/$', views.sgoat, name = 'sgoat'),
     url(r'login/$', views.user_login, name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^profiles/(?P<player_identifier>[\w]+)/(?P<opponent_identifier>[\w]*)$', views.player_profile, name='profile'),

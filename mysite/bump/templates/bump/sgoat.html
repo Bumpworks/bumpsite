@@ -1,0 +1,9 @@
+{% extends 'bump/base.html' %}
+{% block content %}
+    <p><i>Number of weeks spent at world #2. SGOAT status is updated Fridays at 5pm.</i></p>
+    <br/>
+    <ol>
+    {% for player,place_count in placeDict %}
+        <li>{{ player.identifier }}: {{place_count}}</li>
+    {% endfor %}
+{% endblock %}
