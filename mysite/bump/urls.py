@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^api/games/(?P<player1>[\w]+)/(?P<player2>[\w]+)$', views.api_games_between, name='api_games_between'),
     url(r'^api/games/(?P<player>[\w]+)$', views.api_games_by, name='api_games_by'),
     url(r'^api/players$', views.api_players, name='api_players'),
-
+    url(r'^balance',views.balance, name='balance'),
 
 
     

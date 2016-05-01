@@ -37,7 +37,10 @@ class GameEditForm(forms.ModelForm):
                 if fi == 'sweep':
                     raise ValidationError('You cannot sweep and break, dingus!')
         return cd
-        
+class BalanceForm(forms.Form):
+    equation = forms.CharField(max_length = 200)
+    def clean(self):
+        return self.cleaned_data
 class RankingsSimulationForm(forms.Form):
     start_date = forms.SplitDateTimeField(input_time_formats=['%I:%M%p'], input_date_formats=['%m/%d/%y'],required=False,widget=forms.SplitDateTimeWidget(date_format='%m/%d/%y',time_format='%I:%M%p'),initial=datetime(2014, 8, 24, 0, 0))
     end_date = forms.SplitDateTimeField(input_time_formats=['%I:%M%p'], input_date_formats=['%m/%d/%y'],required=False,widget=forms.SplitDateTimeWidget(date_format='%m/%d/%y',time_format='%I:%M%p'),initial=datetime(2016, 12, 31, 17, 0))

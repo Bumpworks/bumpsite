@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Player, Game
 import math
-from .forms import GameSubmissionForm, UserForm, PlayerForm, GameEditForm, RankingsSimulationForm
+from .forms import GameSubmissionForm, UserForm, PlayerForm, GameEditForm, RankingsSimulationForm, BalanceForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -14,6 +14,134 @@ from django.contrib.auth import logout
 from .elo import eloRecords, SgoatCalculator
 import elo
 import operator
+import numpy as np
+
+class Compound(object):
+    def __init__(self,atoms):
+        self.atoms = atoms
+        self.coefficient = -1
+    def __str__(self):
+        ret = str(self.coefficient)
+        for at in self.atoms:
+            ret+= at.__str__()
+        return ret
+    def atom_amount(self,name):
+        total = 0
+        for atom in self.atoms:
+            if atom.name == name:
+                total += atom.subscript
+        return total
+class Atom(object):
+    def __init__(self,str,subscript):
+        self.name = str
+        self.subscript = subscript
+    def __str__(self):
+        return self.name+str(self.subscript)
+class Equation(object):
+    def __init__(self,reactants,products):
+        self.reactants = reactants
+        self.products = products
+    def __str__(self):
+        ret = ""
+        ret+= "+".join(map(str,self.reactants))
+        ret+= " -> "
+        ret+= "+".join(map(str,self.products))
+        return ret
+    def atoms(self):
+        ret = []
+        for compound in self.reactants:
+            for atom in compound.atoms:
+                ret.append(atom.name)
+        return set(ret)
+def parse_side(reactants_list):
+    ret = []
+    for compound in reactants_list:
+        compound = compound.strip()
+        """
+        for i in len(compound):
+            if not isdigit(compound[:i+1]):
+                coefficient = int(compound[:i])
+                compound = compound[i+1:]
+        """
+        atoms = []
+        cur_element = ""
+        cur_subscript = ""
+        for i in range(len(compound)):
+            char = compound[i]
+            if char.isdigit():
+                cur_subscript += char
+                if i == len(compound)-1 or not compound[i+1].isdigit():
+                    atom = Atom(cur_element,int(cur_subscript))
+                    atoms.append(atom)
+                    cur_element=""
+                    cur_subscript=""
+            else:
+                cur_element += char
+        ret.append(Compound(atoms))
+    return ret
+def parse_equation(eqn):
+    split = eqn.split("->")
+    reactants_str = split[0].split("+")
+    products_str = split[1].split("+")
+    reactants = parse_side(reactants_str)
+    products = parse_side(products_str)
+    equation = Equation(reactants,products)
+    return equation
+def balance_equation(eqn):
+    atoms = eqn.atoms()
+    matrix = []
+    for atom in atoms:
+        row = []
+        for compound in eqn.reactants:
+            row.append(compound.atom_amount(atom))
+        for compound in eqn.products:
+            row.append(-1*compound.atom_amount(atom))
+        matrix.append(row)
+    print matrix
+    print atoms
+    print np.linalg.solve(matrix,[0]*len(atoms))
+    
+
+
+def balance(request):
+    if request.method == 'POST':
+        form = BalanceForm(request.POST)
+        if form.is_valid():
+            equation = form.cleaned_data.get("equation")
+            eqn = parse_equation(equation)
+            balance_equation(eqn)
+            return HttpResponse(str(eqn))
+
+    else:
+        form = BalanceForm()
+    
+    return render(request, 'bump/balance.html', {'form': form})
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 def api_games(request):
     data = serializers.serialize("json", Game.objects.all())
