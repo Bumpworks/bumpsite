@@ -191,7 +191,7 @@ def balance(request):
                 eqn = parse_equation(equation)
                 balanced,msg = balance_equation(eqn)
             except:
-                return HttpResponse("Your equation was nonsensical. Remember -> must appear at least once in every valid equation. Read the rules. Also, I don't yet support parentheses so (SO2)2 doesn't work, so write it as S2O4.")
+                return HttpResponse("Your equation was nonsensical. Remember -> must appear at least once in every valid equation. Read the rules. Also, I don't yet support parentheses so (SO2)2 doesn't work, so write it as S2O4. Sorrrrrry!")
             if not balanced:
                 return HttpResponse(msg)
             return HttpResponse(str(eqn))
