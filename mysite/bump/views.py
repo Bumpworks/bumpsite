@@ -14,14 +14,14 @@ from django.contrib.auth import logout
 from .elo import eloRecords, SgoatCalculator
 import elo
 import operator
-import numpy as np
+import sympy
 
 class Compound(object):
     def __init__(self,atoms):
         self.atoms = atoms
         self.coefficient = -1
     def __str__(self):
-        ret = str(self.coefficient)
+        ret = str(self.coefficient) if self.coefficient != 1 else ""
         for at in self.atoms:
             ret+= at.__str__()
         return ret
@@ -36,7 +36,7 @@ class Atom(object):
         self.name = str
         self.subscript = subscript
     def __str__(self):
-        return self.name+str(self.subscript)
+        return self.name+"<sub>"+str(self.subscript)+"</sub>"
 class Equation(object):
     def __init__(self,reactants,products):
         self.reactants = reactants
@@ -53,16 +53,17 @@ class Equation(object):
             for atom in compound.atoms:
                 ret.append(atom.name)
         return set(ret)
+    def num_coefficients(self):
+        return len(self.reactants)+len(self.products)
+    def assign_coefficient(self,index,coefficient):
+        if index >= len(self.reactants):
+            self.products[index-len(self.reactants)].coefficient = coefficient
+        else:
+            self.reactants[index].coefficient = coefficient
 def parse_side(reactants_list):
     ret = []
     for compound in reactants_list:
         compound = compound.strip()
-        """
-        for i in len(compound):
-            if not isdigit(compound[:i+1]):
-                coefficient = int(compound[:i])
-                compound = compound[i+1:]
-        """
         atoms = []
         cur_element = ""
         cur_subscript = ""
@@ -96,11 +97,41 @@ def balance_equation(eqn):
             row.append(compound.atom_amount(atom))
         for compound in eqn.products:
             row.append(-1*compound.atom_amount(atom))
+        row.append(0)
         matrix.append(row)
-    print matrix
-    print atoms
-    print np.linalg.solve(matrix,[0]*len(atoms))
-    
+    matrix = [tuple(row) for row in matrix]
+    matrix = tuple(matrix)
+    matrix = sympy.Matrix(matrix)
+    letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+    symbols = sympy.symbols(",".join(letters[:eqn.num_coefficients()]))
+    soln = sympy.solve_linear_system(matrix,*symbols)
+    print soln
+    print len(soln), len(symbols)
+    if len(soln) < len(symbols)-1:
+        return False,"This equation is not balanceable, as there are multiple correct answers."
+    def soln_copy():
+        return {k:v for k,v in soln.items()}
+    i = 0
+    def condition(solution):
+        if solution == None:
+            return True
+        for k,v in solution.items():
+            if not v.is_integer:
+                return True
+        return False
+    final_solution = None
+    free_symbol = symbols[-1]
+    while condition(final_solution):
+        i+=1
+        copy = soln_copy()
+        for k,v in copy.items():
+            copy[k] = v.subs(free_symbol,i)
+        final_solution = copy
+    final_solution[free_symbol] = i
+    print final_solution
+    for k,v in final_solution.items():
+        eqn.assign_coefficient(symbols.index(k),v)
+    return True,""
 
 
 def balance(request):
@@ -109,7 +140,9 @@ def balance(request):
         if form.is_valid():
             equation = form.cleaned_data.get("equation")
             eqn = parse_equation(equation)
-            balance_equation(eqn)
+            balanced,msg = balance_equation(eqn)
+            if not balanced:
+                return HttpResponse(msg)
             return HttpResponse(str(eqn))
 
     else:
