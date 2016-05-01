@@ -36,7 +36,8 @@ class Atom(object):
         self.name = str
         self.subscript = subscript
     def __str__(self):
-        return self.name+"<sub>"+str(self.subscript)+"</sub>"
+        sub = "<sub>"+str(self.subscript)+"</sub>" if self.subscript != 1 else ""
+        return self.name+sub
 class Equation(object):
     def __init__(self,reactants,products):
         self.reactants = reactants
@@ -47,9 +48,10 @@ class Equation(object):
         ret+= " -> "
         ret+= "+".join(map(str,self.products))
         return ret
-    def atoms(self):
+    def atoms(self,products=False):
+        side = self.products if products else self.reactants
         ret = []
-        for compound in self.reactants:
+        for compound in side:
             for atom in compound.atoms:
                 ret.append(atom.name)
         return set(ret)
@@ -68,16 +70,42 @@ def parse_side(reactants_list):
         cur_element = ""
         cur_subscript = ""
         for i in range(len(compound)):
+            reinit = None
+            cut = False
+            if i == len(compound)-1:
+                cut = True
             char = compound[i]
             if char.isdigit():
+                if cur_element == "":
+                    raise ValueError("test")
                 cur_subscript += char
-                if i == len(compound)-1 or not compound[i+1].isdigit():
-                    atom = Atom(cur_element,int(cur_subscript))
-                    atoms.append(atom)
-                    cur_element=""
-                    cur_subscript=""
+                cut = i == len(compound)-1 or not compound[i+1].isdigit()
+            elif char.isalpha():
+                if cur_element=="":
+                    if char.isupper():
+                        cur_element += char
+                    else:
+                        raise ValueError("test")
+                else:
+                    if char.isupper():
+                        cut = True
+                        reinit = char
+                    else:
+                        cur_element += char
             else:
-                cur_element += char
+                raise ValueError("test")
+            if cut:
+                subscript = 1 if cur_subscript=="" else int(cur_subscript)
+                atom = Atom(cur_element,subscript)
+                atoms.append(atom)
+                cur_element="" if reinit == None else reinit
+                cur_subscript=""
+                if i==len(compound)-1 and reinit != None:
+                    subscript = 1 if cur_subscript=="" else int(cur_subscript)
+                    atom = Atom(cur_element,subscript)
+                    atoms.append(atom)
+                    cur_element="" if reinit == None else reinit
+                    cur_subscript=""
         ret.append(Compound(atoms))
     return ret
 def parse_equation(eqn):
@@ -90,6 +118,15 @@ def parse_equation(eqn):
     return equation
 def balance_equation(eqn):
     atoms = eqn.atoms()
+    prod_atoms = eqn.atoms(products=True)
+    print atoms
+    print prod_atoms
+    for atom in prod_atoms:
+        if atom not in atoms:
+            return False,"The atom "+atom+" appears on the products but not the reactants side. Dingus."
+    for atom in atoms:
+        if atom not in prod_atoms:
+            return False,"The atom "+atom+" appears on the reactants but not the products side. Dingus."
     matrix = []
     for atom in atoms:
         row = []
@@ -102,13 +139,14 @@ def balance_equation(eqn):
     matrix = [tuple(row) for row in matrix]
     matrix = tuple(matrix)
     matrix = sympy.Matrix(matrix)
-    letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-    symbols = sympy.symbols(",".join(letters[:eqn.num_coefficients()]))
+    symbols = sympy.symbols("a0:"+str(eqn.num_coefficients()))
     soln = sympy.solve_linear_system(matrix,*symbols)
     print soln
-    print len(soln), len(symbols)
+    if any(map(lambda x : x == sympy.sympify(0), soln.values())):
+        return False,"This equation has no solution. Dingus."
+    
     if len(soln) < len(symbols)-1:
-        return False,"This equation is not balanceable, as there are multiple correct answers."
+        return False,"This equation is not balanceable, as there are multiple correct answers. Dingus."
     def soln_copy():
         return {k:v for k,v in soln.items()}
     i = 0
@@ -121,14 +159,24 @@ def balance_equation(eqn):
         return False
     final_solution = None
     free_symbol = symbols[-1]
+    
+    increment = 1
+    fractions = []
+    for k,v in soln.items():
+        for arg in v.args:
+            if arg.is_real:
+                fractions.append(sympy.fraction(arg)[1])
+                break
+    if len(fractions) > 0:
+        increment = reduce(sympy.lcm,fractions)
+    
     while condition(final_solution):
-        i+=1
+        i+=increment
         copy = soln_copy()
         for k,v in copy.items():
             copy[k] = v.subs(free_symbol,i)
         final_solution = copy
     final_solution[free_symbol] = i
-    print final_solution
     for k,v in final_solution.items():
         eqn.assign_coefficient(symbols.index(k),v)
     return True,""
@@ -139,8 +187,11 @@ def balance(request):
         form = BalanceForm(request.POST)
         if form.is_valid():
             equation = form.cleaned_data.get("equation")
-            eqn = parse_equation(equation)
-            balanced,msg = balance_equation(eqn)
+            try:
+                eqn = parse_equation(equation)
+                balanced,msg = balance_equation(eqn)
+            except:
+                return HttpResponse("Your equation was nonsensical. Remember -> must appear at least once in every valid equation. Read the rules. Also, I don't yet support parentheses so (SO2)2 doesn't work, so write it as S2O4.")
             if not balanced:
                 return HttpResponse(msg)
             return HttpResponse(str(eqn))

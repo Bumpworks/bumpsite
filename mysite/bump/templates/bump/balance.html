@@ -6,5 +6,22 @@
     {{ form.as_p }}
     <button type="submit">Submit</button>
 </form>
-
+<h4>How To Use</h4>
+<p>Enter an equation into the text box. An equation looks something like H2 + O2 -> H20.
+Every equation has one "->". An element, like "H" or "Fl", must start with a capital letter 
+and encompasses all following lowercase characters. The subscript is put after the atom. You
+can write something like water as "H2O" or "H2O1", if assumes a subscript of 1 if left out.</p>
+<h4>Some Examples (Copy and paste them, or modify them if you'd like)</h4>
+<ul>
+<li>CH4 + O2 -> CO2 + H2</li>
+<li>HIO3 + FeI2 + HCl -> FeCl3 + ICl + H2O</li>
+<li>Hello + Hiya3 -> Hello4Hiya6 (valid elements according to our rules)</li>
+<li>Cr4N48H96C24O24Cr3C18N18+ KMnO4 + H2SO4 -> K2Cr2O7 + MnSO4 + CO2 + KNO3 + K2SO4 + HOH (The Mother of All Chem Equations)</li>
+</ul>
+<h4>Bad Examples</h4>
+<ul>
+<li>e2 + H -> e4H2 (e is not a valid element)</li>
+<li>O2 + H -> O2 (H does not appear on right hand side)</li>
+<li>O2 + H -> O2 + H (this equation has no answer, because there are multiple ways to balance)</li>
+<li>OH + HC -> OHC (this equation has no solution whatsoever, apart from the trivial solution where all coefficients are zero)</ul>
 {% endblock %}
